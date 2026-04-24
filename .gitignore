@@ -5,3 +5,4 @@ temp_*
 *.log
 discovery-log.json
 evolve/cache/
+evolve/dashboard/sessions/

@@ -23,6 +23,19 @@ Pine Script authoring (use `pine-develop`), or chart inspection.
 
 ## Entry point
 
+**Preferred (web UI):**
+
+```bash
+npm run dashboard   # serves http://127.0.0.1:7420
+```
+
+One-page dashboard: launch TradingView, toggle synthetic/live data,
+view the leaderboard + report, edit `evolve/evolve.js` in-browser, and
+brainstorm strategies with Claude Code (uses the user's existing CLI
+subscription — no API key). See `evolve/dashboard/README.md`.
+
+**CLI (equivalent):**
+
 ```bash
 node evolve/evolve.js                              # default: SFP + synthetic
 node evolve/evolve.js --strategy=sfp               # same, explicit

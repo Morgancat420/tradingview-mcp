@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Evolve Dashboard</title>
+<style>
+  :root {
+    --bg: #0f1419; --panel: #171d24; --border: #252d37; --text: #d6deea;
+    --muted: #7d8899; --accent: #4ea1ff; --ok: #5cd08c; --warn: #ffb454; --err: #ff6b6b;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text);
+    font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+  a { color: var(--accent); }
+  button { background: var(--accent); color: #061018; border: 0; padding: 8px 14px;
+    border-radius: 6px; cursor: pointer; font-weight: 600; }
+  button:disabled { opacity: .4; cursor: not-allowed; }
+  button.secondary { background: var(--border); color: var(--text); }
+  input, select, textarea { background: #0b1016; color: var(--text);
+    border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; font-family: inherit; }
+  textarea { font-family: var(--mono); }
+  label { display: block; margin: 6px 0 2px; color: var(--muted); font-size: 12px; }
+
+  #app { display: grid; grid-template-columns: 180px 1fr; height: 100vh; }
+  nav { background: var(--panel); border-right: 1px solid var(--border); padding: 12px 0; }
+  nav h1 { font-size: 13px; color: var(--muted); margin: 4px 16px 12px;
+    text-transform: uppercase; letter-spacing: .08em; }
+  nav button { display: block; width: 100%; text-align: left; background: transparent;
+    color: var(--text); padding: 8px 16px; font-weight: 500; border-radius: 0; }
+  nav button.active { background: #1f2733; border-left: 3px solid var(--accent); padding-left: 13px; }
+
+  main { overflow: auto; padding: 20px; }
+  main section { display: none; }
+  main section.active { display: block; }
+  main h2 { margin-top: 0; }
+
+  .bar { display: flex; gap: 14px; align-items: center; flex-wrap: wrap;
+    padding: 10px 14px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+    background: var(--err); margin-right: 6px; vertical-align: middle; }
+  .dot.ok { background: var(--ok); }
+  .dot.warn { background: var(--warn); }
+
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    padding: 16px; margin: 14px 0; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  pre.log { background: #000; color: #cfd3da; padding: 12px; border-radius: 6px;
+    max-height: 360px; overflow: auto; font-family: var(--mono); font-size: 12px; white-space: pre-wrap; }
+  .markdown { background: var(--panel); padding: 16px; border-radius: 8px;
+    border: 1px solid var(--border); }
+  .markdown table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 12px; }
+  .markdown th, .markdown td { border: 1px solid var(--border); padding: 4px 8px; text-align: left; }
+  .markdown th { background: #1f2733; }
+  .markdown tr:nth-child(odd) td { background: #131921; }
+  .markdown code { font-family: var(--mono); background: #0b1016; padding: 1px 4px; border-radius: 3px; }
+  .markdown h1 { font-size: 20px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+  .markdown h2 { font-size: 16px; margin-top: 20px; }
+  .markdown h3 { font-size: 14px; color: var(--accent); }
+
+  .chat-log { display: flex; flex-direction: column; gap: 12px; max-height: 68vh; overflow: auto;
+    padding: 12px; background: #0b1016; border: 1px solid var(--border); border-radius: 8px; }
+  .msg { border-radius: 8px; padding: 10px 14px; max-width: 92%; }
+  .msg.user { align-self: flex-end; background: #1f355b; }
+  .msg.agent { align-self: flex-start; background: var(--panel); border: 1px solid var(--border); }
+  .msg.tool { align-self: flex-start; background: #0f1a14; border: 1px dashed #2a4a38;
+    font-family: var(--mono); font-size: 12px; color: #9fb9a9; }
+  .chat-input { display: flex; gap: 8px; margin-top: 12px; }
+  .chat-input textarea { flex: 1; min-height: 60px; resize: vertical; }
+
+  .editor { display: grid; grid-template-rows: auto 1fr auto; height: calc(100vh - 140px); gap: 10px; }
+  .editor textarea { flex: 1; width: 100%; min-height: 420px; font-size: 12px; line-height: 1.45; tab-size: 2; }
+  .banner { padding: 10px 14px; border-radius: 6px; display: none; }
+  .banner.err { background: #2b1313; color: #ff9b9b; border: 1px solid #5a2424; display: block; }
+  .banner.ok { background: #12291c; color: #9af0b7; border: 1px solid #2b5939; display: block; }
+  .toolbar { display: flex; gap: 8px; align-items: center; }
+  small.muted { color: var(--muted); }
+</style>
+</head>
+<body>
+<div id="app">
+  <nav>
+    <h1>Evolve</h1>
+    <button class="tab active" data-tab="status">● Status</button>
+    <button class="tab" data-tab="run">▶ Run</button>
+    <button class="tab" data-tab="leaderboard">☷ Leaderboard</button>
+    <button class="tab" data-tab="report">☰ Report</button>
+    <button class="tab" data-tab="config">✎ Editor</button>
+    <button class="tab" data-tab="chat">✦ Chat</button>
+  </nav>
+
+  <main>
+    <!-- STATUS -->
+    <section id="tab-status" class="active">
+      <h2>Status</h2>
+      <div class="bar" id="status-bar">Loading…</div>
+      <div class="card">
+        <h3>Launch TradingView</h3>
+        <p class="muted">Spawns <code>scripts/launch_tv_debug_*.sh</code> for your platform. The TV CDP status will go green once port 9222 responds.</p>
+        <button id="btn-launch-tv">Launch TradingView</button>
+        <pre class="log" id="launch-log" style="display:none"></pre>
+      </div>
+    </section>
+
+    <!-- RUN -->
+    <section id="tab-run">
+      <h2>Run Evolution</h2>
+      <div class="card">
+        <div class="grid2">
+          <div>
+            <label>Strategy</label>
+            <select id="f-strategy">
+              <option value="sfp">sfp (default SFP)</option>
+              <option value="template">template (Donchian example)</option>
+            </select>
+            <label>Data source</label>
+            <select id="f-data">
+              <option value="synthetic">synthetic (deterministic GBM)</option>
+              <option value="live">live (TradingView via CDP)</option>
+            </select>
+            <label>Seed</label>
+            <input id="f-seed" type="number" value="20260424">
+            <label>Bars</label>
+            <input id="f-bars" type="number" placeholder="1500 (synthetic) / 500 (live)">
+          </div>
+          <div id="live-only" style="display:none">
+            <label>Timeframe</label>
+            <select id="f-tf">
+              <option>D</option><option>240</option><option>60</option><option>15</option><option>5</option>
+            </select>
+            <label>Symbols (comma-separated, blank = defaults)</label>
+            <input id="f-symbols" placeholder="BTCUSD,ETHUSD,AAPL">
+            <label><input type="checkbox" id="f-no-cache"> Force fresh pull (no cache)</label>
+          </div>
+        </div>
+        <div style="margin-top: 12px">
+          <button id="btn-run">Run Evolution</button>
+        </div>
+      </div>
+      <pre class="log" id="run-log" style="display:none"></pre>
+    </section>
+
+    <!-- LEADERBOARD -->
+    <section id="tab-leaderboard">
+      <h2>Leaderboard</h2>
+      <button class="secondary" id="btn-reload-lb">Reload</button>
+      <div class="markdown" id="lb-body">Loading…</div>
+    </section>
+
+    <!-- REPORT -->
+    <section id="tab-report">
+      <h2>Final Report</h2>
+      <button class="secondary" id="btn-reload-report">Reload</button>
+      <div class="markdown" id="report-body">Loading…</div>
+    </section>
+
+    <!-- EDITOR -->
+    <section id="tab-config">
+      <h2>Edit <code>evolve/evolve.js</code></h2>
+      <div class="editor">
+        <div class="toolbar">
+          <button id="btn-save">Save</button>
+          <button id="btn-save-run">Save &amp; Run</button>
+          <button class="secondary" id="btn-reload-cfg">Reload from disk</button>
+          <small class="muted" id="cfg-mtime"></small>
+        </div>
+        <textarea id="cfg-source" spellcheck="false"></textarea>
+        <div class="banner" id="cfg-banner"></div>
+      </div>
+    </section>
+
+    <!-- CHAT -->
+    <section id="tab-chat">
+      <h2>Brainstorm with Claude Code</h2>
+      <p class="muted">
+        Uses your local Claude Code subscription via the <code>claude</code> CLI.
+        The agent can read files in this repo directly — ask it to review the SFP
+        baseline, propose new strategies, or suggest parameter tweaks.
+      </p>
+      <div class="chat-log" id="chat-log"></div>
+      <div class="chat-input">
+        <textarea id="chat-input" placeholder="e.g. Summarise the current leaderboard and suggest a better starting strategy."></textarea>
+        <button id="btn-send">Send</button>
+      </div>
+      <div style="margin-top: 8px">
+        <button class="secondary" id="btn-new-session">New session</button>
+        <small class="muted" id="chat-sid"></small>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+// ------------ tiny utilities
+const $ = sel => document.querySelector(sel);
+const el = (tag, attrs = {}, ...children) => {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === 'class') e.className = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
+    else e.setAttribute(k, v);
+  }
+  for (const c of children) e.append(c);
+  return e;
+};
+
+// ------------ minimal markdown renderer (headers, tables, code, paragraphs)
+function renderMarkdown(md) {
+  const esc = s => s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  const lines = md.split('\n');
+  let html = '', i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    const h = line.match(/^(#{1,6})\s+(.*)$/);
+    if (h) { html += `<h${h[1].length}>${esc(h[2])}</h${h[1].length}>`; i++; continue; }
+    if (line.startsWith('```')) {
+      let code = ''; i++;
+      while (i < lines.length && !lines[i].startsWith('```')) { code += lines[i] + '\n'; i++; }
+      html += `<pre><code>${esc(code)}</code></pre>`; i++; continue;
+    }
+    if (line.startsWith('|') && lines[i+1] && /^\|[\s:-]+\|/.test(lines[i+1])) {
+      const rows = []; while (i < lines.length && lines[i].startsWith('|')) { rows.push(lines[i]); i++; }
+      const cells = r => r.slice(1, -1).split('|').map(c => c.trim());
+      html += '<table><thead><tr>' + cells(rows[0]).map(c => `<th>${esc(c)}</th>`).join('') + '</tr></thead><tbody>';
+      for (const r of rows.slice(2)) html += '<tr>' + cells(r).map(c => `<td>${esc(c)}</td>`).join('') + '</tr>';
+      html += '</tbody></table>'; continue;
+    }
+    if (line.trim() === '') { html += ''; i++; continue; }
+    // paragraph with simple inline code/bold
+    const p = esc(line)
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    html += `<p>${p}</p>`; i++;
+  }
+  return html;
+}
+
+// ------------ tabs
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('main section').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    $(`#tab-${btn.dataset.tab}`).classList.add('active');
+    if (btn.dataset.tab === 'leaderboard') loadLeaderboard();
+    if (btn.dataset.tab === 'report')      loadReport();
+    if (btn.dataset.tab === 'config')      loadConfig();
+  });
+});
+
+// ------------ status
+async function loadStatus() {
+  try {
+    const s = await fetch('/api/status').then(r => r.json());
+    const bar = $('#status-bar');
+    const dot = (ok, label) => `<span><span class="dot ${ok ? 'ok' : ''}"></span>${label}</span>`;
+    bar.innerHTML = [
+      dot(s.tvReachable,         'TradingView CDP (9222)'),
+      dot(s.claudeCli.ok,        `claude CLI ${s.claudeCli.version || ''}`),
+      dot(s.nodeModulesInstalled, 'npm install'),
+      dot(s.leaderboardExists,   'leaderboard.md'),
+      dot(s.reportExists,        'FINAL_REPORT.md'),
+      `<small class="muted">platform: ${s.platform}</small>`,
+    ].join(' ');
+  } catch (e) { $('#status-bar').textContent = 'Error: ' + e.message; }
+}
+loadStatus();
+setInterval(loadStatus, 5000);
+
+// ------------ launch TV
+$('#btn-launch-tv').addEventListener('click', async () => {
+  const log = $('#launch-log'); log.style.display = 'block'; log.textContent = 'Starting…\n';
+  const { runId } = await fetch('/api/launch-tv', { method: 'POST' }).then(r => r.json());
+  const es = new EventSource(`/api/evolve/${runId}/stream`);
+  es.onmessage = e => {
+    const evt = JSON.parse(e.data);
+    if (evt.type === 'done') { log.textContent += `\n[exit ${evt.code}]`; es.close(); return; }
+    log.textContent += (evt.text || '') + '\n';
+    log.scrollTop = log.scrollHeight;
+  };
+});
+
+// ------------ run
+const liveToggle = () => {
+  $('#live-only').style.display = $('#f-data').value === 'live' ? 'block' : 'none';
+};
+$('#f-data').addEventListener('change', liveToggle);
+liveToggle();
+
+async function runEvolution() {
+  const cfg = {
+    strategy: $('#f-strategy').value,
+    data:     $('#f-data').value,
+    seed:     Number($('#f-seed').value) || undefined,
+    bars:     Number($('#f-bars').value) || undefined,
+    tf:       $('#f-tf').value,
+    symbols:  $('#f-symbols').value.trim() || undefined,
+    noCache:  $('#f-no-cache').checked,
+  };
+  const log = $('#run-log'); log.style.display = 'block'; log.textContent = '';
+  const r = await fetch('/api/evolve', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(cfg),
+  }).then(r => r.json());
+  if (r.error) { log.textContent = 'Error: ' + r.error; return null; }
+  const runId = r.runId;
+
+  return new Promise(resolve => {
+    const es = new EventSource(`/api/evolve/${runId}/stream`);
+    es.onmessage = e => {
+      const evt = JSON.parse(e.data);
+      if (evt.type === 'done') { log.textContent += `\n[exit ${evt.code}]\n`; es.close(); resolve(evt.code); return; }
+      log.textContent += (evt.text || '') + '\n';
+      log.scrollTop = log.scrollHeight;
+    };
+  });
+}
+$('#btn-run').addEventListener('click', runEvolution);
+
+// ------------ leaderboard / report
+async function loadLeaderboard() {
+  const r = await fetch('/api/leaderboard');
+  if (!r.ok) { $('#lb-body').innerHTML = '<em>No leaderboard yet — run the evolution first.</em>'; return; }
+  $('#lb-body').innerHTML = renderMarkdown(await r.text());
+}
+async function loadReport() {
+  const r = await fetch('/api/report');
+  if (!r.ok) { $('#report-body').innerHTML = '<em>No report yet.</em>'; return; }
+  $('#report-body').innerHTML = renderMarkdown(await r.text());
+}
+$('#btn-reload-lb').addEventListener('click', loadLeaderboard);
+$('#btn-reload-report').addEventListener('click', loadReport);
+
+// ------------ editor
+let cfgMtime = null;
+async function loadConfig() {
+  const r = await fetch('/api/config').then(r => r.json());
+  $('#cfg-source').value = r.source;
+  cfgMtime = r.mtimeMs;
+  $('#cfg-mtime').textContent = `${r.path} · saved ${new Date(r.mtimeMs).toLocaleTimeString()}`;
+  $('#cfg-banner').className = 'banner'; $('#cfg-banner').textContent = '';
+}
+async function saveConfig() {
+  const r = await fetch('/api/config', {
+    method: 'PUT', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ source: $('#cfg-source').value, expectedMtimeMs: cfgMtime }),
+  });
+  const body = await r.json();
+  const b = $('#cfg-banner');
+  if (r.ok) {
+    b.className = 'banner ok'; b.textContent = 'Saved.';
+    cfgMtime = body.mtimeMs;
+    $('#cfg-mtime').textContent = `saved ${new Date(body.mtimeMs).toLocaleTimeString()}`;
+    return true;
+  }
+  if (r.status === 409) {
+    b.className = 'banner err';
+    b.textContent = 'File changed on disk — click "Reload from disk" to pick up changes.';
+    return false;
+  }
+  b.className = 'banner err';
+  b.textContent = `Syntax check failed${body.line ? ` at line ${body.line}` : ''}: ${body.stderr || body.error}`;
+  return false;
+}
+$('#btn-save').addEventListener('click', saveConfig);
+$('#btn-save-run').addEventListener('click', async () => {
+  if (await saveConfig()) {
+    document.querySelector('.tab[data-tab="run"]').click();
+    runEvolution();
+  }
+});
+$('#btn-reload-cfg').addEventListener('click', loadConfig);
+
+// ------------ chat
+let chatSessionId = null;
+let chatEventSource = null;
+const chatLog = $('#chat-log');
+
+function addMsg(kind, text) {
+  const e = el('div', { class: `msg ${kind}` }, text);
+  chatLog.append(e);
+  chatLog.scrollTop = chatLog.scrollHeight;
+  return e;
+}
+
+function attachChatStream(sid) {
+  if (chatEventSource) chatEventSource.close();
+  chatEventSource = new EventSource(`/api/chat/${sid}/stream`);
+  let currentAgent = null;
+  chatEventSource.onmessage = e => {
+    const evt = JSON.parse(e.data);
+    if (evt.type === 'user') { /* echoed; UI already shows it */ return; }
+    if (evt.type === 'turn_done') { currentAgent = null; return; }
+    if (evt.type === 'claude' && evt.event) {
+      const ce = evt.event;
+      if (ce.type === 'assistant' && ce.message?.content) {
+        for (const block of ce.message.content) {
+          if (block.type === 'text') {
+            if (!currentAgent) currentAgent = addMsg('agent', '');
+            currentAgent.textContent += block.text;
+          } else if (block.type === 'tool_use') {
+            addMsg('tool', `🔧 ${block.name}(${JSON.stringify(block.input).slice(0, 160)})`);
+            currentAgent = null;
+          }
+        }
+      } else if (ce.type === 'result' && ce.result) {
+        if (!currentAgent) currentAgent = addMsg('agent', '');
+        if (!currentAgent.textContent) currentAgent.textContent = ce.result;
+        currentAgent = null;
+      }
+    } else if (evt.type === 'stderr') {
+      addMsg('tool', `stderr: ${evt.text}`);
+    }
+  };
+}
+
+async function sendChat() {
+  const msg = $('#chat-input').value.trim();
+  if (!msg) return;
+  $('#chat-input').value = '';
+  addMsg('user', msg);
+  const r = await fetch('/api/chat', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: msg, sessionId: chatSessionId }),
+  }).then(r => r.json());
+  if (r.error) { addMsg('tool', `Error: ${r.error}`); return; }
+  if (r.sessionId !== chatSessionId) {
+    chatSessionId = r.sessionId;
+    $('#chat-sid').textContent = `session: ${chatSessionId.slice(0, 8)}`;
+    attachChatStream(chatSessionId);
+  }
+}
+$('#btn-send').addEventListener('click', sendChat);
+$('#chat-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) sendChat();
+});
+$('#btn-new-session').addEventListener('click', () => {
+  chatSessionId = null; chatLog.innerHTML = '';
+  $('#chat-sid').textContent = '';
+  if (chatEventSource) { chatEventSource.close(); chatEventSource = null; }
+});
+</script>
+</body>
+</html>
