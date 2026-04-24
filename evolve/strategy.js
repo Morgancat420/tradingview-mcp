@@ -1,83 +1,13 @@
-// SFP (Swing Failure Pattern) strategy + backtest engine.
-// Single-position, one-asset-at-a-time backtest.
+// Backtest engine — strategy-agnostic.
+// A strategy module provides: computeContext, detect, passFilters.
 // Capital: $1000 per asset. Risk: 1% of current equity per trade.
 'use strict';
-
-const { sma, ema, atr, rsi } = require('./indicators');
 
 const STARTING_CAPITAL = 1000;
 const RISK_PER_TRADE   = 0.01;
 
-// Detect SFP setups on bar i (using data up to and including i).
-// Returns { side: 'long'|'short', stop, entry, swingLevel } or null.
-function detectSFP(bars, i, cfg, ctx) {
-  if (i < cfg.swing_lookback + 2) return null;
-  const bar = bars[i];
-  const atrNow = ctx.atrArr[i];
-  if (atrNow == null || atrNow <= 0) return null;
-
-  // Prior swing high/low over the window [i - lookback, i - 1]
-  let swingHigh = -Infinity;
-  let swingLow  =  Infinity;
-  for (let j = i - cfg.swing_lookback; j <= i - 1; j++) {
-    if (bars[j].high > swingHigh) swingHigh = bars[j].high;
-    if (bars[j].low  < swingLow)  swingLow  = bars[j].low;
-  }
-
-  const wickMin = cfg.wick_threshold_atr * atrNow;
-
-  // Bearish SFP: swept swing high then closed back below it
-  if (bar.high > swingHigh + wickMin && bar.close < swingHigh) {
-    // confirmation: require last N bars all close below swingHigh (incl. this one)
-    for (let k = 0; k < cfg.confirmation_bars; k++) {
-      const idx = i - k;
-      if (idx < 0 || bars[idx].close >= swingHigh) return null;
-    }
-    return { side: 'short', swingLevel: swingHigh, atr: atrNow };
-  }
-
-  // Bullish SFP
-  if (bar.low < swingLow - wickMin && bar.close > swingLow) {
-    for (let k = 0; k < cfg.confirmation_bars; k++) {
-      const idx = i - k;
-      if (idx < 0 || bars[idx].close <= swingLow) return null;
-    }
-    return { side: 'long', swingLevel: swingLow, atr: atrNow };
-  }
-
-  return null;
-}
-
-function passFilters(bars, i, cfg, ctx, side) {
-  if (cfg.trend_filter) {
-    const e = ctx.emaArr[i];
-    if (e == null) return false;
-    if (side === 'long'  && bars[i].close <= e) return false;
-    if (side === 'short' && bars[i].close >= e) return false;
-  }
-  if (cfg.rsi_filter) {
-    const r = ctx.rsiArr[i];
-    if (r == null) return false;
-    if (side === 'long'  && r >= 40) return false;
-    if (side === 'short' && r <= 60) return false;
-  }
-  if (cfg.volume_filter) {
-    const v = ctx.volSmaArr[i];
-    if (v == null || v <= 0) return false;
-    if (bars[i].volume < cfg.volume_mult * v) return false;
-  }
-  return true;
-}
-
-function backtest(bars, cfg) {
-  const closes  = bars.map(b => b.close);
-  const volumes = bars.map(b => b.volume);
-  const ctx = {
-    atrArr:    atr(bars, 14),
-    emaArr:    ema(closes, 50),
-    rsiArr:    rsi(closes, 14),
-    volSmaArr: sma(volumes, 20),
-  };
+function backtest(bars, cfg, strategy) {
+  const ctx = strategy.computeContext(bars);
 
   let equity = STARTING_CAPITAL;
   let peakEquity = equity;
@@ -85,25 +15,20 @@ function backtest(bars, cfg) {
   const trades = [];
   const equityCurve = [equity];
 
-  let pos = null;     // { side, entry, stop, target, size, entryBar }
+  let pos = null;
 
   for (let i = 0; i < bars.length; i++) {
     const bar = bars[i];
 
-    // Check exits first (intrabar). Pessimistic: if both SL and TP are in-range, SL wins.
+    // Exits first (intrabar, pessimistic: SL wins on ties).
     if (pos) {
       let exitPrice = null, exitReason = null;
-      const hitStopLong  = pos.side === 'long'  && bar.low  <= pos.stop;
-      const hitTpLong    = pos.side === 'long'  && bar.high >= pos.target;
-      const hitStopShort = pos.side === 'short' && bar.high >= pos.stop;
-      const hitTpShort   = pos.side === 'short' && bar.low  <= pos.target;
-
       if (pos.side === 'long') {
-        if (hitStopLong) { exitPrice = pos.stop; exitReason = 'stop'; }
-        else if (hitTpLong) { exitPrice = pos.target; exitReason = 'target'; }
+        if (bar.low  <= pos.stop)   { exitPrice = pos.stop;   exitReason = 'stop'; }
+        else if (bar.high >= pos.target) { exitPrice = pos.target; exitReason = 'target'; }
       } else {
-        if (hitStopShort) { exitPrice = pos.stop; exitReason = 'stop'; }
-        else if (hitTpShort) { exitPrice = pos.target; exitReason = 'target'; }
+        if (bar.high >= pos.stop)   { exitPrice = pos.stop;   exitReason = 'stop'; }
+        else if (bar.low  <= pos.target) { exitPrice = pos.target; exitReason = 'target'; }
       }
 
       if (exitPrice != null) {
@@ -112,12 +37,8 @@ function backtest(bars, cfg) {
           : (pos.entry - exitPrice) * pos.size;
         equity += pnl;
         trades.push({
-          side: pos.side,
-          entry: pos.entry,
-          exit: exitPrice,
-          pnl,
-          rMultiple: pnl / pos.riskDollars,
-          reason: exitReason,
+          side: pos.side, entry: pos.entry, exit: exitPrice, pnl,
+          rMultiple: pnl / pos.riskDollars, reason: exitReason,
           barsHeld: i - pos.entryBar,
         });
         pos = null;
@@ -129,17 +50,24 @@ function backtest(bars, cfg) {
     const dd = (peakEquity - equity) / peakEquity;
     if (dd > maxDD) maxDD = dd;
 
-    // Entry: only if flat
+    // Entry: only if flat.
     if (!pos && equity > 0) {
-      const sig = detectSFP(bars, i, cfg, ctx);
-      if (sig && passFilters(bars, i, cfg, ctx, sig.side)) {
+      const sig = strategy.detect(bars, i, cfg, ctx);
+      if (sig && strategy.passFilters(bars, i, cfg, ctx, sig.side)) {
         const entry = bar.close;
-        const atrNow = sig.atr;
-        const stopDist = cfg.stop_atr_mult * atrNow;
+        // Strategy may supply its own stop distance; otherwise use ATR × stop_atr_mult.
+        let stopDist;
+        if (typeof sig.stopDist === 'number') {
+          stopDist = sig.stopDist;
+        } else if (typeof sig.atr === 'number' && cfg.stop_atr_mult != null) {
+          stopDist = cfg.stop_atr_mult * sig.atr;
+        } else {
+          stopDist = 0;
+        }
+        const rr = cfg.rr_ratio != null ? cfg.rr_ratio : 2.0;
         if (stopDist > 0) {
           const stop   = sig.side === 'long' ? entry - stopDist : entry + stopDist;
-          const target = sig.side === 'long' ? entry + cfg.rr_ratio * stopDist
-                                             : entry - cfg.rr_ratio * stopDist;
+          const target = sig.side === 'long' ? entry + rr * stopDist : entry - rr * stopDist;
           const riskDollars = equity * RISK_PER_TRADE;
           const size = riskDollars / stopDist;
           if (size > 0 && isFinite(size)) {
@@ -150,7 +78,6 @@ function backtest(bars, cfg) {
     }
   }
 
-  // Force-close any open position at last close (mark-to-market)
   if (pos) {
     const last = bars[bars.length - 1].close;
     const pnl = pos.side === 'long'
@@ -159,7 +86,8 @@ function backtest(bars, cfg) {
     equity += pnl;
     trades.push({
       side: pos.side, entry: pos.entry, exit: last, pnl,
-      rMultiple: pnl / pos.riskDollars, reason: 'eod', barsHeld: bars.length - 1 - pos.entryBar,
+      rMultiple: pnl / pos.riskDollars, reason: 'eod',
+      barsHeld: bars.length - 1 - pos.entryBar,
     });
   }
 
@@ -194,25 +122,12 @@ function summarise(trades, finalEquity, equityCurve, maxDD) {
   };
 }
 
-// Aggregate per-asset stats into a single portfolio-style summary.
 function aggregate(perAsset) {
   const totalStart  = perAsset.reduce((s, a) => s + a.result.startCapital, 0);
   const totalFinal  = perAsset.reduce((s, a) => s + a.result.finalEquity, 0);
   const totalTrades = perAsset.reduce((s, a) => s + a.result.trades, 0);
   const totalWins   = perAsset.reduce((s, a) => s + a.result.wins, 0);
-  let grossWin = 0, grossLoss = 0;
-  for (const a of perAsset) {
-    const r = a.result;
-    const wR = r.winRate;
-    const wins = r.wins;
-    const losses = r.losses;
-    // Reconstruct gross profit/loss from PF & netPnl when available.
-    // (We already have net pnl; keep PF via per-asset, weight by trade count.)
-    if (r.profitFactor !== Infinity && r.losses > 0) {
-      const avgLoss = (r.grossLoss) || 0;
-    }
-  }
-  // Simpler: mean-weight PF by trade count.
+
   const pfWeighted = totalTrades > 0
     ? perAsset.reduce((s, a) => s + (isFinite(a.result.profitFactor) ? a.result.profitFactor : 3) * a.result.trades, 0) / totalTrades
     : 0;

@@ -3,6 +3,9 @@
 A Swing Failure Pattern (SFP) fires when price sweeps a prior swing high/low
 (liquidity grab) and closes back inside the range, trapping breakout traders.
 
+Implementation: `evolve/strategies/sfp.js`. The evolver loads this by default;
+pass `--strategy=<name-or-path>` to swap in a different starting strategy.
+
 ## Entry rules (baseline)
 
 - **Bearish SFP**: `high > prior_swing_high` AND `close < prior_swing_high`.

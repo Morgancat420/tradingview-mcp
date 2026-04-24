@@ -1,19 +1,19 @@
 # Evolution Leaderboard
 
-Deterministic backtest: 10 assets × 1500 bars, $1000 per asset, 1% risk per trade.
+**Strategy:** sfp · **Seed:** 20260424 · **Universe:** 10 assets × 1500 bars · **Capital:** $1000 / asset · **Risk:** 1% per trade
 
 **Fitness** = netPnL ÷ max(worst-DD, 5%), with a soft penalty when totalTrades < 30.
 
 ## Baseline
 
 | Rank | Config | Net P&L | Return | PF | WinRate | MaxDD | Trades | WinAssets | Lkbk | Wick | RR | StopATR | Conf | Filters | Fitness |
-| ---- | ------ | ------- | ------ | -- | ------- | ----- | ------ | --------- | ---- | ---- | -- | ------- | ---- | ------- | ------- |
+| ---- | ------ | ------- | ------ | --- | ------- | ----- | ------ | --------- | ---- | ---- | --- | ------- | ---- | ------- | ------- |
 | 1 | baseline | -$656 | -6.6% | 0.81 | 29.2% | 24.7% | 496 | 1/10 | 10 | 0.30 | 2.0 | 1.5 | 0 | none | -2654 |
 
 ## Generation 1 — 20 random variants (ranked)
 
 | Rank | Config | Net P&L | Return | PF | WinRate | MaxDD | Trades | WinAssets | Lkbk | Wick | RR | StopATR | Conf | Filters | Fitness |
-| ---- | ------ | ------- | ------ | -- | ------- | ----- | ------ | --------- | ---- | ---- | -- | ------- | ---- | ------- | ------- |
+| ---- | ------ | ------- | ------ | --- | ------- | ----- | ------ | --------- | ---- | ---- | --- | ------- | ---- | ------- | ------- |
 | 1 | G1-V20 | $28 | 0.3% | 1.41 | 35.3% | 2.0% | 17 | 6/10 | 18 | 1.15 | 2.3 | 2.8 | 1 | trend | 359 |
 | 2 | G1-V8 | $35 | 0.3% | 1.96 | 50.0% | 1.0% | 10 | 4/10 | 22 | 1.45 | 1.7 | 2.1 | 0 | trend | 346 |
 | 3 | G1-V1 | $14 | 0.1% | 1.37 | 35.9% | 4.9% | 39 | 4/10 | 16 | 0.75 | 1.9 | 2.9 | 2 | trend | 273 |
@@ -38,7 +38,7 @@ Deterministic backtest: 10 assets × 1500 bars, $1000 per asset, 1% risk per tra
 ## Generation 2 — 15 children of Gen-1 top-5 (ranked)
 
 | Rank | Config | Net P&L | Return | PF | WinRate | MaxDD | Trades | WinAssets | Lkbk | Wick | RR | StopATR | Conf | Filters | Fitness |
-| ---- | ------ | ------- | ------ | -- | ------- | ----- | ------ | --------- | ---- | ---- | -- | ------- | ---- | ------- | ------- |
+| ---- | ------ | ------- | ------ | --- | ------- | ----- | ------ | --------- | ---- | ---- | --- | ------- | ---- | ------- | ------- |
 | 1 | G2-P1C1 | $48 | 0.5% | 1.53 | 42.9% | 2.0% | 14 | 6/10 | 18 | 1.15 | 2.1 | 2.9 | 1 | trend+vol | 558 |
 | 2 | G2-P5C2 | $19 | 0.2% | 1.21 | 42.9% | 4.5% | 56 | 6/10 | 11 | 0.65 | 1.4 | 2.2 | 1 | trend+vol | 371 |
 | 3 | G2-P3C3 | $1 | 0.0% | 2.04 | 31.3% | 4.9% | 32 | 5/10 | 19 | 0.75 | 2.3 | 3.0 | 2 | trend+vol | 14 |
@@ -58,7 +58,7 @@ Deterministic backtest: 10 assets × 1500 bars, $1000 per asset, 1% risk per tra
 ## Generation 3 — 15 children of combined Gen-1+2 top-5 (ranked)
 
 | Rank | Config | Net P&L | Return | PF | WinRate | MaxDD | Trades | WinAssets | Lkbk | Wick | RR | StopATR | Conf | Filters | Fitness |
-| ---- | ------ | ------- | ------ | -- | ------- | ----- | ------ | --------- | ---- | ---- | -- | ------- | ---- | ------- | ------- |
+| ---- | ------ | ------- | ------ | --- | ------- | ----- | ------ | --------- | ---- | ---- | --- | ------- | ---- | ------- | ------- |
 | 1 | G3-P2C1 | $78 | 0.8% | 1.22 | 48.2% | 9.8% | 164 | 5/10 | 13 | 0.50 | 1.2 | 2.3 | 1 | vol | 796 |
 | 2 | G3-P4C2 | $24 | 0.2% | 1.56 | 50.0% | 1.0% | 8 | 4/10 | 22 | 1.50 | 1.6 | 1.8 | 0 | trend+vol | 216 |
 | 3 | G3-P1C3 | $0 | 0.0% | 0.00 | 0.0% | 0.0% | 0 | 0/10 | 21 | 0.95 | 1.9 | 2.7 | 1 | trend+rsi+vol | 0 |
@@ -78,7 +78,7 @@ Deterministic backtest: 10 assets × 1500 bars, $1000 per asset, 1% risk per tra
 ## Overall top 10 (all variants)
 
 | Rank | Config | Net P&L | Return | PF | WinRate | MaxDD | Trades | WinAssets | Lkbk | Wick | RR | StopATR | Conf | Filters | Fitness |
-| ---- | ------ | ------- | ------ | -- | ------- | ----- | ------ | --------- | ---- | ---- | -- | ------- | ---- | ------- | ------- |
+| ---- | ------ | ------- | ------ | --- | ------- | ----- | ------ | --------- | ---- | ---- | --- | ------- | ---- | ------- | ------- |
 | 1 | G3-P2C1 | $78 | 0.8% | 1.22 | 48.2% | 9.8% | 164 | 5/10 | 13 | 0.50 | 1.2 | 2.3 | 1 | vol | 796 |
 | 2 | G2-P1C1 | $48 | 0.5% | 1.53 | 42.9% | 2.0% | 14 | 6/10 | 18 | 1.15 | 2.1 | 2.9 | 1 | trend+vol | 558 |
 | 3 | G2-P5C2 | $19 | 0.2% | 1.21 | 42.9% | 4.5% | 56 | 6/10 | 11 | 0.65 | 1.4 | 2.2 | 1 | trend+vol | 371 |

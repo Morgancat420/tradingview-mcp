@@ -1,5 +1,12 @@
 // Evolution loop: generate variants, backtest each across the universe,
 // mutate top-5 into children, repeat for 3 generations.
+//
+// CLI:
+//   node evolve/evolve.js                        # default: sfp
+//   node evolve/evolve.js --strategy=sfp         # built-in by name
+//   node evolve/evolve.js --strategy=path/to/my.js   # custom module
+//   node evolve/evolve.js --seed=42 --bars=2000
+//
 'use strict';
 
 const fs = require('fs');
@@ -7,7 +14,28 @@ const path = require('path');
 const { buildUniverse } = require('./data');
 const { backtest, aggregate } = require('./strategy');
 
-// ---------- Deterministic PRNG for mutation / sampling ----------
+// ---------- CLI parsing ----------
+function parseArgs(argv) {
+  const out = {};
+  for (const a of argv.slice(2)) {
+    const m = a.match(/^--([^=]+)(?:=(.*))?$/);
+    if (m) out[m[1]] = m[2] === undefined ? true : m[2];
+  }
+  return out;
+}
+
+function resolveStrategy(spec) {
+  if (!spec || spec === true) spec = 'sfp';
+  // Built-in? Look in ./strategies/<name>.js first.
+  const builtin = path.join(__dirname, 'strategies', `${spec}.js`);
+  if (fs.existsSync(builtin)) return require(builtin);
+  // Otherwise treat as a file path (absolute or relative to cwd).
+  const abs = path.isAbsolute(spec) ? spec : path.resolve(process.cwd(), spec);
+  if (fs.existsSync(abs)) return require(abs);
+  throw new Error(`Strategy not found: ${spec} (tried ${builtin} and ${abs})`);
+}
+
+// ---------- PRNG + helpers ----------
 function mulberry32(seed) {
   let a = seed >>> 0;
   return function () {
@@ -19,91 +47,48 @@ function mulberry32(seed) {
   };
 }
 
-const rng = mulberry32(20260424);
-const rand = () => rng();
-const randInt = (lo, hi) => Math.floor(lo + rand() * (hi - lo + 1));
-const randFloat = (lo, hi) => lo + rand() * (hi - lo);
-const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
-const round = (v, p) => Math.round(v / p) * p;
+function makeHelpers(seed) {
+  const rng = mulberry32(seed);
+  const rand = () => rng();
+  return {
+    rand,
+    randInt:   (lo, hi) => Math.floor(lo + rand() * (hi - lo + 1)),
+    randFloat: (lo, hi) => lo + rand() * (hi - lo),
+    clamp:     (v, lo, hi) => Math.max(lo, Math.min(hi, v)),
+    round:     (v, p) => Math.round(v / p) * p,
+  };
+}
 
-// ---------- Parameter space ----------
-const BASELINE = {
-  name: 'baseline',
-  swing_lookback: 10,
-  wick_threshold_atr: 0.30,
-  rr_ratio: 2.0,
-  stop_atr_mult: 1.5,
-  confirmation_bars: 0,
-  trend_filter: false,
-  rsi_filter: false,
-  volume_filter: false,
-  volume_mult: 1.3,
-};
-
-const RANGES = {
-  swing_lookback:     [5, 30],
-  wick_threshold_atr: [0.0, 1.5],
-  rr_ratio:           [1.0, 4.0],
-  stop_atr_mult:      [0.5, 3.0],
-  confirmation_bars:  [0, 3],
-};
-
-const FILTERS = ['trend_filter', 'rsi_filter', 'volume_filter'];
-
-function clampCfg(c) {
-  c.swing_lookback     = clamp(Math.round(c.swing_lookback),     RANGES.swing_lookback[0],     RANGES.swing_lookback[1]);
-  c.wick_threshold_atr = round(clamp(c.wick_threshold_atr,       RANGES.wick_threshold_atr[0], RANGES.wick_threshold_atr[1]), 0.05);
-  c.rr_ratio           = round(clamp(c.rr_ratio,                 RANGES.rr_ratio[0],           RANGES.rr_ratio[1]), 0.1);
-  c.stop_atr_mult      = round(clamp(c.stop_atr_mult,            RANGES.stop_atr_mult[0],      RANGES.stop_atr_mult[1]), 0.1);
-  c.confirmation_bars  = clamp(Math.round(c.confirmation_bars),  RANGES.confirmation_bars[0],  RANGES.confirmation_bars[1]);
+// ---------- Generic random/mutate fallbacks (used if strategy doesn't override) ----------
+function genericClamp(strategy, h, c) {
+  for (const [k, [lo, hi]] of Object.entries(strategy.RANGES)) {
+    const isInt = Number.isInteger(lo) && Number.isInteger(hi);
+    c[k] = h.clamp(isInt ? Math.round(c[k]) : c[k], lo, hi);
+  }
   return c;
 }
 
-function randomConfig(name) {
-  return clampCfg({
-    name,
-    swing_lookback:     randInt(RANGES.swing_lookback[0],     RANGES.swing_lookback[1]),
-    wick_threshold_atr: randFloat(RANGES.wick_threshold_atr[0], RANGES.wick_threshold_atr[1]),
-    rr_ratio:           randFloat(RANGES.rr_ratio[0],           RANGES.rr_ratio[1]),
-    stop_atr_mult:      randFloat(RANGES.stop_atr_mult[0],      RANGES.stop_atr_mult[1]),
-    confirmation_bars:  randInt(RANGES.confirmation_bars[0],    RANGES.confirmation_bars[1]),
-    trend_filter:       rand() < 0.35,
-    rsi_filter:         rand() < 0.35,
-    volume_filter:      rand() < 0.35,
-    volume_mult:        round(randFloat(1.1, 1.8), 0.1),
-  });
+function genericRandomConfig(strategy, h, name) {
+  const c = { name };
+  for (const [k, [lo, hi]] of Object.entries(strategy.RANGES)) {
+    const isInt = Number.isInteger(lo) && Number.isInteger(hi);
+    c[k] = isInt ? h.randInt(lo, hi) : h.randFloat(lo, hi);
+  }
+  for (const f of strategy.FILTERS) c[f] = h.rand() < 0.35;
+  return c;
 }
 
-function mutate(parent, childName) {
-  // Small perturbation on each numeric param (~15% of range),
-  // then swap exactly one filter (on->off or off->on, at random).
+function genericMutate(strategy, h, parent, childName) {
   const c = { ...parent, name: childName };
-  const perturb = (v, [lo, hi], frac = 0.15) => v + (rand() * 2 - 1) * (hi - lo) * frac;
-
-  c.swing_lookback     = perturb(c.swing_lookback,     RANGES.swing_lookback);
-  c.wick_threshold_atr = perturb(c.wick_threshold_atr, RANGES.wick_threshold_atr);
-  c.rr_ratio           = perturb(c.rr_ratio,           RANGES.rr_ratio);
-  c.stop_atr_mult      = perturb(c.stop_atr_mult,      RANGES.stop_atr_mult);
-  if (rand() < 0.4) c.confirmation_bars = perturb(c.confirmation_bars, RANGES.confirmation_bars);
-
-  // One filter swap (toggle exactly one filter)
-  const swap = FILTERS[Math.floor(rand() * FILTERS.length)];
+  for (const [k, [lo, hi]] of Object.entries(strategy.RANGES)) {
+    c[k] = c[k] + (h.rand() * 2 - 1) * (hi - lo) * 0.15;
+  }
+  const swap = strategy.FILTERS[Math.floor(h.rand() * strategy.FILTERS.length)];
   c[swap] = !c[swap];
-  c.volume_mult = round(clamp(c.volume_mult + (rand() * 2 - 1) * 0.2, 1.1, 1.8), 0.1);
-  return clampCfg(c);
+  return genericClamp(strategy, h, c);
 }
 
-// ---------- Running backtests ----------
-function runConfigOnUniverse(universe, cfg) {
-  const perAsset = universe.map(u => ({
-    symbol: u.symbol,
-    result: backtest(u.bars, cfg),
-  }));
-  const agg = aggregate(perAsset);
-  return { cfg, perAsset, agg };
-}
-
-// Fitness = net pnl / max(worst DD, 5%) with soft penalty for tiny trade counts.
+// ---------- Fitness (strategy-agnostic) ----------
 function fitness(run) {
   const { agg } = run;
   const ddFloor = Math.max(agg.worstDrawdown, 0.05);
@@ -112,28 +97,55 @@ function fitness(run) {
   return raw * Math.min(tradePenalty, 1.0);
 }
 
-// ---------- Leaderboard formatting ----------
+// ---------- Formatting ----------
 function fmtPct(x) { return (x * 100).toFixed(1) + '%'; }
 function fmtNum(x, p = 2) { return Number.isFinite(x) ? x.toFixed(p) : '—'; }
 function fmtPf(x)  { return !Number.isFinite(x) ? '∞' : x.toFixed(2); }
 function fmtDollar(x) { return (x >= 0 ? '$' : '-$') + Math.abs(x).toFixed(0); }
 
-function rowForRun(rank, run) {
-  const c = run.cfg, a = run.agg;
-  const filters = [
-    c.trend_filter ? 'trend' : null,
-    c.rsi_filter ? 'rsi' : null,
-    c.volume_filter ? 'vol' : null,
-  ].filter(Boolean).join('+') || 'none';
-
-  return `| ${rank} | ${c.name} | ${fmtDollar(a.netPnl)} | ${fmtPct(a.returnPct / 100)} | ${fmtPf(a.profitFactorW)} | ${fmtPct(a.winRate)} | ${fmtPct(a.worstDrawdown)} | ${a.totalTrades} | ${a.assetsPositive}/${a.assetsTotal} | ${c.swing_lookback} | ${fmtNum(c.wick_threshold_atr)} | ${fmtNum(c.rr_ratio, 1)} | ${fmtNum(c.stop_atr_mult, 1)} | ${c.confirmation_bars} | ${filters} | ${fmtNum(fitness(run), 0)} |`;
+function fmtCell(v, fmt) {
+  if (v === undefined || v === null || Number.isNaN(v)) return '—';
+  switch (fmt) {
+    case 'int': return String(Math.round(v));
+    case 'f1':  return fmtNum(v, 1);
+    case 'f2':  return fmtNum(v, 2);
+    case 'f3':  return fmtNum(v, 3);
+    case 'pct': return fmtPct(v);
+    case 'bool': return v ? 'on' : 'off';
+    default:    return typeof v === 'number' ? fmtNum(v, 2) : String(v);
+  }
 }
 
-function leaderboardTable(runs) {
-  const header = `| Rank | Config | Net P&L | Return | PF | WinRate | MaxDD | Trades | WinAssets | Lkbk | Wick | RR | StopATR | Conf | Filters | Fitness |\n| ---- | ------ | ------- | ------ | -- | ------- | ----- | ------ | --------- | ---- | ---- | -- | ------- | ---- | ------- | ------- |`;
+function activeFilters(strategy, cfg) {
+  const labels = strategy.FILTER_LABELS || {};
+  const active = strategy.FILTERS.filter(f => cfg[f]).map(f => labels[f] || f.replace('_filter', ''));
+  return active.length ? active.join('+') : 'none';
+}
+
+function rowForRun(strategy, rank, run) {
+  const c = run.cfg, a = run.agg;
+  const extras = (strategy.LEADERBOARD_COLUMNS || []).map(col => fmtCell(c[col.key], col.fmt));
+  const base = [
+    rank, c.name, fmtDollar(a.netPnl), fmtPct(a.returnPct / 100),
+    fmtPf(a.profitFactorW), fmtPct(a.winRate), fmtPct(a.worstDrawdown),
+    a.totalTrades, `${a.assetsPositive}/${a.assetsTotal}`,
+  ];
+  return `| ${[...base, ...extras, activeFilters(strategy, c), fmtNum(fitness(run), 0)].join(' | ')} |`;
+}
+
+function leaderboardTable(strategy, runs) {
+  const extraLabels = (strategy.LEADERBOARD_COLUMNS || []).map(c => c.label);
+  const headerCols = [
+    'Rank', 'Config', 'Net P&L', 'Return', 'PF', 'WinRate', 'MaxDD', 'Trades', 'WinAssets',
+    ...extraLabels, 'Filters', 'Fitness',
+  ];
+  const sep = headerCols.map(h => '-'.repeat(Math.max(3, h.length)));
   const sorted = [...runs].sort((a, b) => fitness(b) - fitness(a));
-  const rows = sorted.map((r, i) => rowForRun(i + 1, r));
-  return [header, ...rows].join('\n');
+  return [
+    `| ${headerCols.join(' | ')} |`,
+    `| ${sep.join(' | ')} |`,
+    ...sorted.map((r, i) => rowForRun(strategy, i + 1, r)),
+  ].join('\n');
 }
 
 function perAssetTable(run) {
@@ -150,92 +162,110 @@ function perAssetTable(run) {
   return lines.join('\n');
 }
 
-// ---------- Main evolution ----------
+// ---------- Running ----------
+function runConfigOnUniverse(universe, cfg, strategy) {
+  const perAsset = universe.map(u => ({
+    symbol: u.symbol,
+    result: backtest(u.bars, cfg, strategy),
+  }));
+  return { cfg, perAsset, agg: aggregate(perAsset) };
+}
+
 function topN(runs, n) {
   return [...runs].sort((a, b) => fitness(b) - fitness(a)).slice(0, n);
 }
 
-function evolve() {
-  const N_BARS = 1500;
-  const universe = buildUniverse(N_BARS);
-  console.log(`[evolve] Built universe: ${universe.length} assets × ${N_BARS} bars`);
+// ---------- Main ----------
+function evolve(options = {}) {
+  const strategy = options.strategy || resolveStrategy('sfp');
+  const seed   = options.seed   || 20260424;
+  const nBars  = options.nBars  || 1500;
+  const outDir = options.outDir || path.join(__dirname, '..');
 
-  // Baseline run (for reference)
+  // Strategy must provide random/mutate OR we use generic defaults.
+  const randomConfig = strategy.randomConfig
+    ? (h, name) => strategy.randomConfig(h, name)
+    : (h, name) => genericRandomConfig(strategy, h, name);
+  const mutate = strategy.mutate
+    ? (h, p, name) => strategy.mutate(h, p, name)
+    : (h, p, name) => genericMutate(strategy, h, p, name);
+
+  const h = makeHelpers(seed);
+  const universe = buildUniverse(nBars);
+  console.log(`[evolve] Strategy: ${strategy.name}`);
+  console.log(`[evolve] Built universe: ${universe.length} assets × ${nBars} bars`);
+
   console.log('[evolve] Running baseline...');
-  const baselineRun = runConfigOnUniverse(universe, BASELINE);
+  const baselineRun = runConfigOnUniverse(universe, strategy.BASELINE, strategy);
 
-  // ----- Generation 1: baseline + 20 random variants -----
   console.log('[evolve] Generating 20 Gen-1 variants...');
   const gen1Configs = [];
-  for (let i = 0; i < 20; i++) gen1Configs.push(randomConfig(`G1-V${i + 1}`));
+  for (let i = 0; i < 20; i++) gen1Configs.push(randomConfig(h, `G1-V${i + 1}`));
   const gen1Runs = gen1Configs.map((cfg, i) => {
     process.stdout.write(`\r[evolve]   G1 ${i + 1}/20    `);
-    return runConfigOnUniverse(universe, cfg);
+    return runConfigOnUniverse(universe, cfg, strategy);
   });
   process.stdout.write('\n');
 
-  // ----- Generation 2: top 5 of Gen 1 → 3 children each -----
   console.log('[evolve] Generating 15 Gen-2 children...');
   const gen1Top5 = topN(gen1Runs, 5);
   const gen2Configs = [];
   gen1Top5.forEach((p, pIdx) => {
-    for (let k = 0; k < 3; k++) gen2Configs.push(mutate(p.cfg, `G2-P${pIdx + 1}C${k + 1}`));
+    for (let k = 0; k < 3; k++) gen2Configs.push(mutate(h, p.cfg, `G2-P${pIdx + 1}C${k + 1}`));
   });
   const gen2Runs = gen2Configs.map((cfg, i) => {
     process.stdout.write(`\r[evolve]   G2 ${i + 1}/15    `);
-    return runConfigOnUniverse(universe, cfg);
+    return runConfigOnUniverse(universe, cfg, strategy);
   });
   process.stdout.write('\n');
 
-  // ----- Generation 3: top 5 of combined Gen 1+2 → 3 children each -----
   console.log('[evolve] Generating 15 Gen-3 children...');
   const combinedTop5 = topN([...gen1Runs, ...gen2Runs], 5);
   const gen3Configs = [];
   combinedTop5.forEach((p, pIdx) => {
-    for (let k = 0; k < 3; k++) gen3Configs.push(mutate(p.cfg, `G3-P${pIdx + 1}C${k + 1}`));
+    for (let k = 0; k < 3; k++) gen3Configs.push(mutate(h, p.cfg, `G3-P${pIdx + 1}C${k + 1}`));
   });
   const gen3Runs = gen3Configs.map((cfg, i) => {
     process.stdout.write(`\r[evolve]   G3 ${i + 1}/15    `);
-    return runConfigOnUniverse(universe, cfg);
+    return runConfigOnUniverse(universe, cfg, strategy);
   });
   process.stdout.write('\n');
 
   const allRuns = [baselineRun, ...gen1Runs, ...gen2Runs, ...gen3Runs];
   const champion = topN(allRuns.filter(r => r.cfg.name !== 'baseline'), 1)[0];
 
-  // ---------- Write leaderboard.md ----------
+  // leaderboard.md
   const lbLines = [];
   lbLines.push(`# Evolution Leaderboard`);
   lbLines.push('');
-  lbLines.push(`Deterministic backtest: 10 assets × ${N_BARS} bars, \$1000 per asset, 1% risk per trade.`);
+  lbLines.push(`**Strategy:** ${strategy.name} · **Seed:** ${seed} · **Universe:** ${universe.length} assets × ${nBars} bars · **Capital:** $1000 / asset · **Risk:** 1% per trade`);
   lbLines.push('');
   lbLines.push(`**Fitness** = netPnL ÷ max(worst-DD, 5%), with a soft penalty when totalTrades < 30.`);
   lbLines.push('');
 
-  lbLines.push(`## Baseline`);
+  lbLines.push('## Baseline');
   lbLines.push('');
-  lbLines.push(leaderboardTable([baselineRun]));
-  lbLines.push('');
-
-  lbLines.push(`## Generation 1 — 20 random variants (ranked)`);
-  lbLines.push('');
-  lbLines.push(leaderboardTable(gen1Runs));
+  lbLines.push(leaderboardTable(strategy, [baselineRun]));
   lbLines.push('');
 
-  lbLines.push(`## Generation 2 — 15 children of Gen-1 top-5 (ranked)`);
+  lbLines.push('## Generation 1 — 20 random variants (ranked)');
   lbLines.push('');
-  lbLines.push(leaderboardTable(gen2Runs));
-  lbLines.push('');
-
-  lbLines.push(`## Generation 3 — 15 children of combined Gen-1+2 top-5 (ranked)`);
-  lbLines.push('');
-  lbLines.push(leaderboardTable(gen3Runs));
+  lbLines.push(leaderboardTable(strategy, gen1Runs));
   lbLines.push('');
 
-  lbLines.push(`## Overall top 10 (all variants)`);
+  lbLines.push('## Generation 2 — 15 children of Gen-1 top-5 (ranked)');
   lbLines.push('');
-  const overallTop = topN(allRuns, 10);
-  lbLines.push(leaderboardTable(overallTop));
+  lbLines.push(leaderboardTable(strategy, gen2Runs));
+  lbLines.push('');
+
+  lbLines.push('## Generation 3 — 15 children of combined Gen-1+2 top-5 (ranked)');
+  lbLines.push('');
+  lbLines.push(leaderboardTable(strategy, gen3Runs));
+  lbLines.push('');
+
+  lbLines.push('## Overall top 10 (all variants)');
+  lbLines.push('');
+  lbLines.push(leaderboardTable(strategy, topN(allRuns, 10)));
   lbLines.push('');
 
   lbLines.push(`## Champion per-asset breakdown — **${champion.cfg.name}**`);
@@ -243,13 +273,12 @@ function evolve() {
   lbLines.push(perAssetTable(champion));
   lbLines.push('');
 
-  fs.writeFileSync(path.join(__dirname, '..', 'leaderboard.md'), lbLines.join('\n'));
+  fs.writeFileSync(path.join(outDir, 'leaderboard.md'), lbLines.join('\n'));
   console.log('[evolve] Wrote leaderboard.md');
 
-  // ---------- Save raw JSON for analysis ----------
   const jsonDump = {
-    seed: 20260424,
-    nBars: N_BARS,
+    strategy: strategy.name,
+    seed, nBars,
     baseline: { cfg: baselineRun.cfg, agg: baselineRun.agg, perAsset: baselineRun.perAsset },
     gen1: gen1Runs.map(r => ({ cfg: r.cfg, agg: r.agg })),
     gen2: gen2Runs.map(r => ({ cfg: r.cfg, agg: r.agg })),
@@ -262,9 +291,18 @@ function evolve() {
   );
   console.log('[evolve] Wrote evolve/results/run.json');
 
-  return { baselineRun, gen1Runs, gen2Runs, gen3Runs, champion };
+  return { strategy, baselineRun, gen1Runs, gen2Runs, gen3Runs, champion };
 }
 
-if (require.main === module) evolve();
+if (require.main === module) {
+  const args = parseArgs(process.argv);
+  const strategy = resolveStrategy(args.strategy);
+  evolve({
+    strategy,
+    seed:  args.seed  ? Number(args.seed)  : undefined,
+    nBars: args.bars  ? Number(args.bars)  : undefined,
+    outDir: args.out,
+  });
+}
 
-module.exports = { evolve, runConfigOnUniverse, BASELINE, fitness };
+module.exports = { evolve, runConfigOnUniverse, resolveStrategy, fitness };

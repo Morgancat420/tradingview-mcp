@@ -1,4 +1,5 @@
 {
+  "strategy": "sfp",
   "seed": 20260424,
   "nBars": 1500,
   "baseline": {

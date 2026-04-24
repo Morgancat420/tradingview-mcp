@@ -24,7 +24,11 @@ Pine Script authoring (use `pine-develop`), or chart inspection.
 ## Entry point
 
 ```bash
-node evolve/evolve.js
+node evolve/evolve.js                             # default: SFP
+node evolve/evolve.js --strategy=sfp              # same, explicit
+node evolve/evolve.js --strategy=template         # bundled Donchian example
+node evolve/evolve.js --strategy=path/to/my.js    # user-supplied module
+node evolve/evolve.js --seed=42 --bars=3000       # custom seed / history length
 ```
 
 Writes:
@@ -34,6 +38,46 @@ Writes:
 
 Runtime: ~0.3s for the default universe (10 assets × 1500 bars). Safe to
 run inline without backgrounding.
+
+### Providing a different starting strategy
+
+Create a module that exports the interface below (see
+`evolve/strategies/template.js` for a complete working example). Point the
+CLI at it with `--strategy=path/to/my.js`. Default SFP is unchanged.
+
+**Required exports**
+
+| Field | Type | Purpose |
+|---|---|---|
+| `name` | string | Shown in leaderboard header + JSON dump |
+| `BASELINE` | `{ name: 'baseline', ...cfg }` | Starting config (the "current strategy") |
+| `RANGES` | `{ paramKey: [lo, hi] }` | Numeric search space |
+| `FILTERS` | `string[]` | Keys of on/off filters |
+| `computeContext(bars)` | `bars -> ctx` | Pre-compute indicator arrays once per asset |
+| `detect(bars, i, cfg, ctx)` | `-> { side, atr, stopDist? } \| null` | Entry signal on bar `i` |
+| `passFilters(bars, i, cfg, ctx, side)` | `-> bool` | Filter gate |
+
+**Optional**
+
+| Field | Purpose |
+|---|---|
+| `FILTER_LABELS` | Short labels for the `Filters` column (`{ trend_filter: 'trend' }`) |
+| `LEADERBOARD_COLUMNS` | Extra columns shown per-row (`[{label, key, fmt}]`, fmt: `int\|f1\|f2\|pct\|bool`) |
+| `randomConfig(helpers, name)` | Override sampling to preserve an exact RNG sequence |
+| `mutate(helpers, parent, childName)` | Override mutation (default: ±15% numeric perturbation + one filter flip) |
+
+**Signal contract**: `detect()` returns a signal object whose `side` is
+`'long'` or `'short'`. If the strategy supplies `stopDist` (price distance
+from entry to stop), the engine uses it. Otherwise the engine computes
+`stopDist = cfg.stop_atr_mult * sig.atr`. Risk sizing is always 1% of
+current equity / stopDist. Target = `cfg.rr_ratio * stopDist`.
+
+**Ranges** with whole-number endpoints are treated as integers and
+rounded on both sampling and mutation.
+
+**Helpers** passed to `randomConfig`/`mutate` (when overridden):
+`{ rand, randInt, randFloat, clamp, round }`. All share the same seeded
+PRNG — don't call `Math.random()`.
 
 ## The loop (what `evolve.js` does)
 
@@ -98,10 +142,15 @@ data-source-agnostic.
 
 ### Step 1 — Confirm the strategy to evolve
 
-Default = SFP baseline in `evolve/BASELINE.md`. If the user named a
-different strategy, adapt `evolve/strategy.js :: detectSFP()` and
-`passFilters()` to the new rules, and update the baseline config and
-parameter ranges in `evolve/evolve.js`.
+Default = SFP baseline (`evolve/strategies/sfp.js`, spec in
+`evolve/BASELINE.md`). If the user named a different strategy:
+
+1. Check `evolve/strategies/` — maybe it already exists.
+2. Otherwise create a new module modelled on
+   `evolve/strategies/template.js` and invoke with
+   `--strategy=<name>` (bundled) or `--strategy=<path>` (custom).
+3. **Do not modify** `evolve/strategies/sfp.js` to fit a new strategy —
+   it's the default and other users rely on it.
 
 ### Step 2 — Run the evolver
 
@@ -152,17 +201,20 @@ Use TodoWrite with roughly these tasks (mark each complete as you go):
 
 ## Customising the search
 
-Edit these in `evolve/evolve.js` without touching the rest of the pipeline:
-
+Per-strategy (edit the strategy module):
 - `RANGES` — parameter search bounds
 - `FILTERS` — list of on/off filter keys
-- `randomConfig()` — sampling distribution
-- `mutate()` — perturbation step (default ±15% of range) + filter swap rule
-- `fitness()` — swap in Sharpe, Sortino, CAR/MDD, etc.
-- Gen sizes in `evolve()` — currently 20 / 15 / 15. Increase for finer search.
+- `randomConfig()` — sampling distribution (override the default uniform sampler)
+- `mutate()` — perturbation rule (override the default ±15% + filter flip)
 
-For **convergence runs** (after exploration): reduce mutation step to ~5% and
-run 2–3 more generations seeded from the current champion's neighborhood.
+Global (edit `evolve/evolve.js`):
+- `fitness()` — swap in Sharpe, Sortino, CAR/MDD, etc.
+- Gen sizes in `evolve()` — currently 20 / 15 / 15
+- CLI flags already exposed: `--seed`, `--bars`, `--strategy`, `--out`
+
+For **convergence runs** (after exploration): reduce the mutation step to ~5%
+(pass through a custom `mutate()` on the strategy) and run 2–3 more generations
+seeded from the current champion's neighborhood.
 
 ## Rules
 
