@@ -1,0 +1,1830 @@
+{
+  "seed": 20260424,
+  "nBars": 1500,
+  "baseline": {
+    "cfg": {
+      "name": "baseline",
+      "swing_lookback": 10,
+      "wick_threshold_atr": 0.3,
+      "rr_ratio": 2,
+      "stop_atr_mult": 1.5,
+      "confirmation_bars": 0,
+      "trend_filter": false,
+      "rsi_filter": false,
+      "volume_filter": false,
+      "volume_mult": 1.3
+    },
+    "agg": {
+      "totalStart": 10000,
+      "totalFinal": 9344.228055022113,
+      "netPnl": -655.771944977887,
+      "returnPct": -6.557719449778865,
+      "totalTrades": 496,
+      "totalWins": 145,
+      "winRate": 0.2923387096774194,
+      "profitFactorW": 0.8097214833828362,
+      "worstDrawdown": 0.24707808807654477,
+      "avgDrawdown": 0.12559522076441657,
+      "assetsPositive": 1,
+      "assetsTotal": 10
+    },
+    "perAsset": [
+      {
+        "symbol": "BTCUSD",
+        "result": {
+          "startCapital": 1000,
+          "finalEquity": 960.4370505104469,
+          "netPnl": -39.56294948955315,
+          "returnPct": -3.956294948955319,
+          "trades": 23,
+          "wins": 7,
+          "losses": 16,
+          "winRate": 0.30434782608695654,
+          "profitFactor": 0.7490730050347134,
+          "maxDrawdown": 0.0411202566026617,
+          "avgR": -0.16685178210695825,
+          "expectancyPerTrade": -1.7201282386762238,
+          "equityCurveLen": 1501
+        }
+      },
+      {
+        "symbol": "ETHUSD",
+        "result": {
+          "startCapital": 1000,
+          "finalEquity": 931.4537773197005,
+          "netPnl": -68.54622268029948,
+          "returnPct": -6.854622268029953,
+          "trades": 55,
+          "wins": 16,
+          "losses": 39,
+          "winRate": 0.2909090909090909,
+          "profitFactor": 0.8222316010149663,
+          "maxDrawdown": 0.14147828450258132,
+          "avgR": -0.11985525682242684,
+          "expectancyPerTrade": -1.2462949578236269,
+          "equityCurveLen": 1501
+        }
+      },
+      {
+        "symbol": "SOLUSD",
+        "result": {
+          "startCapital": 1000,
+          "finalEquity": 886.9060970194363,
+          "netPnl": -113.09390298056371,
+          "returnPct": -11.309390298056377,
+          "trades": 36,
+          "wins": 8,
+          "losses": 28,
+          "winRate": 0.2222222222222222,
+          "profitFactor": 0.557052781470334,
+          "maxDrawdown": 0.13228926944317676,
+          "avgR": -0.3251475764917376,
+          "expectancyPerTrade": -3.1414973050156587,
+          "equityCurveLen": 1501
+        }
+      },
+      {
+        "symbol": "ES1!",
+        "result": {
+          "startCapital": 1000,
+          "finalEquity": 974.856039089528,
+          "netPnl": -25.143960910471947,
+          "returnPct": -2.5143960910471996,
+          "trades": 56,
+          "wins": 18,
+          "losses": 38,
+          "winRate": 0.32142857142857145,
+          "profitFactor": 0.9354263948418082,
+          "maxDrawdown": 0.1057285119774183,
+          "avgR": -0.03571428571428572,
+          "expectancyPerTrade": -0.4489993019727133,
+          "equityCurveLen": 1501
+        }
+      },
+      {
+        "symbol": "NQ1!",
+        "result": {
+          "startCapital": 1000,
+          "finalEquity": 989.6083485986711,
+          "netPnl": -10.391651401328886,
+          "returnPct": -1.0391651401328916,
+          "trades": 59,
+          "wins": 20,
+          "losses": 39,
+          "winRate": 0.3389830508474576,
+          "profitFactor": 0.9734671668466763,
+          "maxDrawdown": 0.13125418723102167,
+          "avgR": -0.007998213695274961,
+          "expectancyPerTrade": -0.1761296847682862,
+          "equityCurveLen": 1501
+        }
+      },
+      {
+        "symbol": "GC1!",
+        "result": {
+          "startCapital": 1000,
+          "finalEquity": 1048.1758638632646,
+          "netPnl": 48.17586386326457,
+          "returnPct": 4.817586386326456,
+          "trades": 38,
+          "wins": 15,
+          "losses": 23,
+          "winRate": 0.39473684210526316,
+          "profitFactor": 1.2092682629170954,
+          "maxDrawdown": 0.05880041168352141,
+          "avgR": 0.1341389373524158,
+          "expectancyPerTrade": 1.2677858911385413,
+          "equityCurveLen": 1501
+        }
+      },
+      {
+        "symbol": "CL1!",
+        "result": {
+          "startCapital": 1000,
+          "finalEquity": 831.038905847808,
+          "netPnl": -168.961094152192,
+          "returnPct": -16.896109415219197,
+          "trades": 60,
+          "wins": 14,
+          "losses": 46,
+          "winRate": 0.23333333333333334,
+          "profitFactor": 0.6012361602474423,
+          "maxDrawdown": 0.16896109415219202,
+          "avgR": -0.3,
+          "expectancyPerTrade": -2.816018235869867,
+          "equityCurveLen": 1501
+        }
+      },
+      {
+        "symbol": "AAPL",
+        "result": {
+          "startCapital": 1000,
+          "finalEquity": 965.6829399743493,
+          "netPnl": -34.317060025650676,
+          "returnPct": -3.4317060025650714,
+          "trades": 51,
+          "wins": 16,
+          "losses": 35,
+          "winRate": 0.3137254901960784,
+          "profitFactor": 0.8991832026540243,
+          "maxDrawdown": 0.12404681614384404,
+          "avgR": -0.05882352941176477,
+          "expectancyPerTrade": -0.6728835299147191,
+          "equityCurveLen": 1501
+        }
+      },
+      {
+        "symbol": "TSLA",
+        "result": {
+          "startCapital": 1000,
+          "finalEquity": 928.1525406342903,
+          "netPnl": -71.84745936570971,
+          "returnPct": -7.184745936570969,
+          "trades": 47,
+          "wins": 13,
+          "losses": 34,
+          "winRate": 0.2765957446808511,
+          "profitFactor": 0.7766032822638228,
+          "maxDrawdown": 0.10519528783120348,
+          "avgR": -0.14964297981832103,
+          "expectancyPerTrade": -1.5286693482065896,
+          "equityCurveLen": 1501
+        }
+      },
+      {
+        "symbol": "NVDA",
+        "result": {
+          "startCapital": 1000,
+          "finalEquity": 827.9164921646185,
+          "netPnl": -172.0835078353815,
+          "returnPct": -17.20835078353815,
+          "trades": 71,
+          "wins": 18,
+          "losses": 53,
+          "winRate": 0.2535211267605634,
+          "profitFactor": 0.6325779759265768,
+          "maxDrawdown": 0.24707808807654477,
+          "avgR": -0.257456351072583,
+          "expectancyPerTrade": -2.42371137796312,
+          "equityCurveLen": 1501
+        }
+      }
+    ]
+  },
+  "gen1": [
+    {
+      "cfg": {
+        "name": "G1-V1",
+        "swing_lookback": 16,
+        "wick_threshold_atr": 0.75,
+        "rr_ratio": 1.9000000000000001,
+        "stop_atr_mult": 2.9000000000000004,
+        "confirmation_bars": 2,
+        "trend_filter": true,
+        "rsi_filter": false,
+        "volume_filter": false,
+        "volume_mult": 1.1
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 10013.65125877149,
+        "netPnl": 13.651258771489665,
+        "returnPct": 0.13651258771489871,
+        "totalTrades": 39,
+        "totalWins": 14,
+        "winRate": 0.358974358974359,
+        "profitFactorW": 1.3675725575953221,
+        "worstDrawdown": 0.04900995009999997,
+        "avgDrawdown": 0.020771494010000037,
+        "assetsPositive": 4,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G1-V2",
+        "swing_lookback": 23,
+        "wick_threshold_atr": 0.30000000000000004,
+        "rr_ratio": 1.8,
+        "stop_atr_mult": 2,
+        "confirmation_bars": 1,
+        "trend_filter": false,
+        "rsi_filter": false,
+        "volume_filter": true,
+        "volume_mult": 1.5
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9845.511466020153,
+        "netPnl": -154.4885339798475,
+        "returnPct": -1.544885339798474,
+        "totalTrades": 208,
+        "totalWins": 69,
+        "winRate": 0.3317307692307692,
+        "profitFactorW": 0.9135085908143944,
+        "worstDrawdown": 0.13712631219591412,
+        "avgDrawdown": 0.06473340395269327,
+        "assetsPositive": 3,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G1-V3",
+        "swing_lookback": 11,
+        "wick_threshold_atr": 1.25,
+        "rr_ratio": 2.5,
+        "stop_atr_mult": 1.8,
+        "confirmation_bars": 1,
+        "trend_filter": false,
+        "rsi_filter": false,
+        "volume_filter": false,
+        "volume_mult": 1.4000000000000001
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9842.141520792396,
+        "netPnl": -157.85847920760352,
+        "returnPct": -1.578584792076032,
+        "totalTrades": 71,
+        "totalWins": 16,
+        "winRate": 0.22535211267605634,
+        "profitFactorW": 0.9064670776901993,
+        "worstDrawdown": 0.08648275251635903,
+        "avgDrawdown": 0.04382192042595191,
+        "assetsPositive": 5,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G1-V4",
+        "swing_lookback": 15,
+        "wick_threshold_atr": 0.35000000000000003,
+        "rr_ratio": 1.5,
+        "stop_atr_mult": 1.4000000000000001,
+        "confirmation_bars": 2,
+        "trend_filter": false,
+        "rsi_filter": true,
+        "volume_filter": true,
+        "volume_mult": 1.4000000000000001
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9829.198170059944,
+        "netPnl": -170.80182994005554,
+        "returnPct": -1.70801829940056,
+        "totalTrades": 233,
+        "totalWins": 87,
+        "winRate": 0.37339055793991416,
+        "profitFactorW": 0.9215045635759286,
+        "worstDrawdown": 0.09123167192740271,
+        "avgDrawdown": 0.06252892280357428,
+        "assetsPositive": 2,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G1-V5",
+        "swing_lookback": 7,
+        "wick_threshold_atr": 1.05,
+        "rr_ratio": 1.2000000000000002,
+        "stop_atr_mult": 1.4000000000000001,
+        "confirmation_bars": 0,
+        "trend_filter": false,
+        "rsi_filter": false,
+        "volume_filter": true,
+        "volume_mult": 1.3
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9836.080322065405,
+        "netPnl": -163.9196779345948,
+        "returnPct": -1.6391967793459528,
+        "totalTrades": 134,
+        "totalWins": 54,
+        "winRate": 0.40298507462686567,
+        "profitFactorW": 0.864982128600373,
+        "worstDrawdown": 0.07552054554655548,
+        "avgDrawdown": 0.04702244868339183,
+        "assetsPositive": 2,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G1-V6",
+        "swing_lookback": 19,
+        "wick_threshold_atr": 1.4000000000000001,
+        "rr_ratio": 3.7,
+        "stop_atr_mult": 1.1,
+        "confirmation_bars": 3,
+        "trend_filter": true,
+        "rsi_filter": false,
+        "volume_filter": false,
+        "volume_mult": 1.6
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9936.7627,
+        "netPnl": -63.23730000000069,
+        "returnPct": -0.6323730000000083,
+        "totalTrades": 11,
+        "totalWins": 1,
+        "winRate": 0.09090909090909091,
+        "profitFactorW": 0.4889882920343813,
+        "worstDrawdown": 0.029701000000000023,
+        "avgDrawdown": 0.00995010000000001,
+        "assetsPositive": 1,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G1-V7",
+        "swing_lookback": 9,
+        "wick_threshold_atr": 0.9,
+        "rr_ratio": 4,
+        "stop_atr_mult": 1.4000000000000001,
+        "confirmation_bars": 2,
+        "trend_filter": false,
+        "rsi_filter": false,
+        "volume_filter": true,
+        "volume_mult": 1.5
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9338.59347595198,
+        "netPnl": -661.4065240480195,
+        "returnPct": -6.614065240480194,
+        "totalTrades": 136,
+        "totalWins": 14,
+        "winRate": 0.10294117647058823,
+        "profitFactorW": 0.4749293722430334,
+        "worstDrawdown": 0.157056806616073,
+        "avgDrawdown": 0.0990170242878023,
+        "assetsPositive": 2,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G1-V8",
+        "swing_lookback": 22,
+        "wick_threshold_atr": 1.4500000000000002,
+        "rr_ratio": 1.7000000000000002,
+        "stop_atr_mult": 2.1,
+        "confirmation_bars": 0,
+        "trend_filter": true,
+        "rsi_filter": false,
+        "volume_filter": false,
+        "volume_mult": 1.6
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 10034.60611,
+        "netPnl": 34.606110000000626,
+        "returnPct": 0.3460611000000169,
+        "totalTrades": 10,
+        "totalWins": 5,
+        "winRate": 0.5,
+        "profitFactorW": 1.9632005174569205,
+        "worstDrawdown": 0.01000000000000001,
+        "avgDrawdown": 0.004999999999999993,
+        "assetsPositive": 4,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G1-V9",
+        "swing_lookback": 30,
+        "wick_threshold_atr": 1.5,
+        "rr_ratio": 3.3000000000000003,
+        "stop_atr_mult": 0.6000000000000001,
+        "confirmation_bars": 3,
+        "trend_filter": false,
+        "rsi_filter": true,
+        "volume_filter": false,
+        "volume_mult": 1.3
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9938.1556,
+        "netPnl": -61.84439999999995,
+        "returnPct": -0.6184439999999958,
+        "totalTrades": 19,
+        "totalWins": 3,
+        "winRate": 0.15789473684210525,
+        "profitFactorW": 0.8447726989841114,
+        "worstDrawdown": 0.029701000000000023,
+        "avgDrawdown": 0.014930100000000012,
+        "assetsPositive": 3,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G1-V10",
+        "swing_lookback": 7,
+        "wick_threshold_atr": 1.25,
+        "rr_ratio": 3.4000000000000004,
+        "stop_atr_mult": 1.6,
+        "confirmation_bars": 2,
+        "trend_filter": false,
+        "rsi_filter": false,
+        "volume_filter": true,
+        "volume_mult": 1.5
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9724.895131836143,
+        "netPnl": -275.10486816385674,
+        "returnPct": -2.751048681638568,
+        "totalTrades": 76,
+        "totalWins": 11,
+        "winRate": 0.14473684210526316,
+        "profitFactorW": 0.6439274210103307,
+        "worstDrawdown": 0.10466174574128342,
+        "avgDrawdown": 0.0553147759777453,
+        "assetsPositive": 1,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G1-V11",
+        "swing_lookback": 14,
+        "wick_threshold_atr": 1.3,
+        "rr_ratio": 3.4000000000000004,
+        "stop_atr_mult": 0.9,
+        "confirmation_bars": 3,
+        "trend_filter": true,
+        "rsi_filter": false,
+        "volume_filter": false,
+        "volume_mult": 1.7000000000000002
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9927.74181,
+        "netPnl": -72.25819000000047,
+        "returnPct": -0.7225819000000078,
+        "totalTrades": 16,
+        "totalWins": 2,
+        "winRate": 0.125,
+        "profitFactorW": 0.6196358970869825,
+        "worstDrawdown": 0.03940399000000002,
+        "avgDrawdown": 0.013890499,
+        "assetsPositive": 2,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G1-V12",
+        "swing_lookback": 23,
+        "wick_threshold_atr": 1.4500000000000002,
+        "rr_ratio": 2.3000000000000003,
+        "stop_atr_mult": 0.7000000000000001,
+        "confirmation_bars": 2,
+        "trend_filter": false,
+        "rsi_filter": true,
+        "volume_filter": false,
+        "volume_mult": 1.8
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9931.1959,
+        "netPnl": -68.80409999999938,
+        "returnPct": -0.6880409999999948,
+        "totalTrades": 20,
+        "totalWins": 4,
+        "winRate": 0.2,
+        "profitFactorW": 0.7339063344345788,
+        "worstDrawdown": 0.029701000000000023,
+        "avgDrawdown": 0.014930099999999998,
+        "assetsPositive": 4,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G1-V13",
+        "swing_lookback": 5,
+        "wick_threshold_atr": 0.6000000000000001,
+        "rr_ratio": 2.4000000000000004,
+        "stop_atr_mult": 2.3000000000000003,
+        "confirmation_bars": 2,
+        "trend_filter": false,
+        "rsi_filter": false,
+        "volume_filter": true,
+        "volume_mult": 1.3
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9470.508490782573,
+        "netPnl": -529.4915092174269,
+        "returnPct": -5.294915092174268,
+        "totalTrades": 150,
+        "totalWins": 30,
+        "winRate": 0.2,
+        "profitFactorW": 0.5621962345972851,
+        "worstDrawdown": 0.1624632959004356,
+        "avgDrawdown": 0.07654615904033134,
+        "assetsPositive": 2,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G1-V14",
+        "swing_lookback": 10,
+        "wick_threshold_atr": 0.7000000000000001,
+        "rr_ratio": 1.6,
+        "stop_atr_mult": 2.5,
+        "confirmation_bars": 1,
+        "trend_filter": true,
+        "rsi_filter": true,
+        "volume_filter": true,
+        "volume_mult": 1.5
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 10000,
+        "netPnl": 0,
+        "returnPct": 0,
+        "totalTrades": 0,
+        "totalWins": 0,
+        "winRate": 0,
+        "profitFactorW": 0,
+        "worstDrawdown": 0,
+        "avgDrawdown": 0,
+        "assetsPositive": 0,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G1-V15",
+        "swing_lookback": 16,
+        "wick_threshold_atr": 0.05,
+        "rr_ratio": 3.6,
+        "stop_atr_mult": 2.8000000000000003,
+        "confirmation_bars": 1,
+        "trend_filter": true,
+        "rsi_filter": false,
+        "volume_filter": true,
+        "volume_mult": 1.3
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9938.185285035983,
+        "netPnl": -61.814714964017185,
+        "returnPct": -0.6181471496401691,
+        "totalTrades": 85,
+        "totalWins": 19,
+        "winRate": 0.2235294117647059,
+        "profitFactorW": 1.0372443071099935,
+        "worstDrawdown": 0.07242956858796981,
+        "avgDrawdown": 0.04352178719789796,
+        "assetsPositive": 5,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G1-V16",
+        "swing_lookback": 18,
+        "wick_threshold_atr": 1.05,
+        "rr_ratio": 1.9000000000000001,
+        "stop_atr_mult": 2,
+        "confirmation_bars": 3,
+        "trend_filter": true,
+        "rsi_filter": false,
+        "volume_filter": true,
+        "volume_mult": 1.6
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 10006.087714361005,
+        "netPnl": 6.087714361005055,
+        "returnPct": 0.0608771436100497,
+        "totalTrades": 17,
+        "totalWins": 6,
+        "winRate": 0.35294117647058826,
+        "profitFactorW": 1.094978170068724,
+        "worstDrawdown": 0.029701000000000023,
+        "avgDrawdown": 0.009950100000000033,
+        "assetsPositive": 4,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G1-V17",
+        "swing_lookback": 15,
+        "wick_threshold_atr": 1,
+        "rr_ratio": 3.5,
+        "stop_atr_mult": 1.5,
+        "confirmation_bars": 3,
+        "trend_filter": false,
+        "rsi_filter": false,
+        "volume_filter": false,
+        "volume_mult": 1.6
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9355.334356694791,
+        "netPnl": -644.6656433052085,
+        "returnPct": -6.446656433052089,
+        "totalTrades": 122,
+        "totalWins": 13,
+        "winRate": 0.10655737704918032,
+        "profitFactorW": 0.4278196584442406,
+        "worstDrawdown": 0.157056806616073,
+        "avgDrawdown": 0.09074740711933234,
+        "assetsPositive": 2,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G1-V18",
+        "swing_lookback": 28,
+        "wick_threshold_atr": 1.2000000000000002,
+        "rr_ratio": 2,
+        "stop_atr_mult": 1.3,
+        "confirmation_bars": 2,
+        "trend_filter": false,
+        "rsi_filter": true,
+        "volume_filter": false,
+        "volume_mult": 1.3
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9840.69699990498,
+        "netPnl": -159.30300009502025,
+        "returnPct": -1.5930300009502019,
+        "totalTrades": 46,
+        "totalWins": 10,
+        "winRate": 0.21739130434782608,
+        "profitFactorW": 0.7169421326336477,
+        "worstDrawdown": 0.05851985059899994,
+        "avgDrawdown": 0.031582595970100005,
+        "assetsPositive": 3,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G1-V19",
+        "swing_lookback": 5,
+        "wick_threshold_atr": 0.9,
+        "rr_ratio": 1.2000000000000002,
+        "stop_atr_mult": 0.7000000000000001,
+        "confirmation_bars": 0,
+        "trend_filter": true,
+        "rsi_filter": true,
+        "volume_filter": true,
+        "volume_mult": 1.7000000000000002
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 10000,
+        "netPnl": 0,
+        "returnPct": 0,
+        "totalTrades": 0,
+        "totalWins": 0,
+        "winRate": 0,
+        "profitFactorW": 0,
+        "worstDrawdown": 0,
+        "avgDrawdown": 0,
+        "assetsPositive": 0,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G1-V20",
+        "swing_lookback": 18,
+        "wick_threshold_atr": 1.1500000000000001,
+        "rr_ratio": 2.3000000000000003,
+        "stop_atr_mult": 2.8000000000000003,
+        "confirmation_bars": 1,
+        "trend_filter": true,
+        "rsi_filter": false,
+        "volume_filter": false,
+        "volume_mult": 1.8
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 10028.055474906161,
+        "netPnl": 28.05547490616118,
+        "returnPct": 0.28055474906161226,
+        "totalTrades": 17,
+        "totalWins": 6,
+        "winRate": 0.35294117647058826,
+        "profitFactorW": 1.4106414324370586,
+        "worstDrawdown": 0.019900000000000022,
+        "avgDrawdown": 0.008980000000000004,
+        "assetsPositive": 6,
+        "assetsTotal": 10
+      }
+    }
+  ],
+  "gen2": [
+    {
+      "cfg": {
+        "name": "G2-P1C1",
+        "swing_lookback": 18,
+        "wick_threshold_atr": 1.1500000000000001,
+        "rr_ratio": 2.1,
+        "stop_atr_mult": 2.9000000000000004,
+        "confirmation_bars": 1,
+        "trend_filter": true,
+        "rsi_filter": false,
+        "volume_filter": true,
+        "volume_mult": 1.8
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 10048.141152443113,
+        "netPnl": 48.14115244311324,
+        "returnPct": 0.4814115244311301,
+        "totalTrades": 14,
+        "totalWins": 6,
+        "winRate": 0.42857142857142855,
+        "profitFactorW": 1.5258780132083778,
+        "worstDrawdown": 0.019900000000000008,
+        "avgDrawdown": 0.0059900000000000075,
+        "assetsPositive": 6,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G2-P1C2",
+        "swing_lookback": 20,
+        "wick_threshold_atr": 1.1,
+        "rr_ratio": 2.6,
+        "stop_atr_mult": 2.8000000000000003,
+        "confirmation_bars": 1,
+        "trend_filter": true,
+        "rsi_filter": true,
+        "volume_filter": false,
+        "volume_mult": 1.8
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 10000,
+        "netPnl": 0,
+        "returnPct": 0,
+        "totalTrades": 0,
+        "totalWins": 0,
+        "winRate": 0,
+        "profitFactorW": 0,
+        "worstDrawdown": 0,
+        "avgDrawdown": 0,
+        "assetsPositive": 0,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G2-P1C3",
+        "swing_lookback": 15,
+        "wick_threshold_atr": 1.2000000000000002,
+        "rr_ratio": 2.6,
+        "stop_atr_mult": 2.6,
+        "confirmation_bars": 1,
+        "trend_filter": false,
+        "rsi_filter": false,
+        "volume_filter": false,
+        "volume_mult": 1.7000000000000002
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9780.318460715007,
+        "netPnl": -219.68153928499305,
+        "returnPct": -2.1968153928499268,
+        "totalTrades": 63,
+        "totalWins": 12,
+        "winRate": 0.19047619047619047,
+        "profitFactorW": 0.6886404581396918,
+        "worstDrawdown": 0.08648275251635903,
+        "avgDrawdown": 0.042889660038144886,
+        "assetsPositive": 2,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G2-P2C1",
+        "swing_lookback": 22,
+        "wick_threshold_atr": 1.4500000000000002,
+        "rr_ratio": 1.5,
+        "stop_atr_mult": 1.8,
+        "confirmation_bars": 0,
+        "trend_filter": false,
+        "rsi_filter": false,
+        "volume_filter": false,
+        "volume_mult": 1.8
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9925.526581707887,
+        "netPnl": -74.47341829211291,
+        "returnPct": -0.7447341829211251,
+        "totalTrades": 35,
+        "totalWins": 11,
+        "winRate": 0.3142857142857143,
+        "profitFactorW": 0.956404894381293,
+        "worstDrawdown": 0.04900995010000008,
+        "avgDrawdown": 0.021781494009999996,
+        "assetsPositive": 5,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G2-P2C2",
+        "swing_lookback": 25,
+        "wick_threshold_atr": 1.4500000000000002,
+        "rr_ratio": 1.6,
+        "stop_atr_mult": 1.8,
+        "confirmation_bars": 0,
+        "trend_filter": false,
+        "rsi_filter": false,
+        "volume_filter": false,
+        "volume_mult": 1.4000000000000001
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9976.434960990235,
+        "netPnl": -23.565039009765314,
+        "returnPct": -0.23565039009765254,
+        "totalTrades": 31,
+        "totalWins": 11,
+        "winRate": 0.3548387096774194,
+        "profitFactorW": 1.2771428226342554,
+        "worstDrawdown": 0.03940399000000002,
+        "avgDrawdown": 0.01786059899999999,
+        "assetsPositive": 5,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G2-P2C3",
+        "swing_lookback": 24,
+        "wick_threshold_atr": 1.25,
+        "rr_ratio": 1.3,
+        "stop_atr_mult": 2.2,
+        "confirmation_bars": 0,
+        "trend_filter": true,
+        "rsi_filter": true,
+        "volume_filter": false,
+        "volume_mult": 1.5
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 10000,
+        "netPnl": 0,
+        "returnPct": 0,
+        "totalTrades": 0,
+        "totalWins": 0,
+        "winRate": 0,
+        "profitFactorW": 0,
+        "worstDrawdown": 0,
+        "avgDrawdown": 0,
+        "assetsPositive": 0,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G2-P3C1",
+        "swing_lookback": 15,
+        "wick_threshold_atr": 0.8500000000000001,
+        "rr_ratio": 1.7000000000000002,
+        "stop_atr_mult": 2.7,
+        "confirmation_bars": 2,
+        "trend_filter": true,
+        "rsi_filter": true,
+        "volume_filter": false,
+        "volume_mult": 1.2000000000000002
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 10000,
+        "netPnl": 0,
+        "returnPct": 0,
+        "totalTrades": 0,
+        "totalWins": 0,
+        "winRate": 0,
+        "profitFactorW": 0,
+        "worstDrawdown": 0,
+        "avgDrawdown": 0,
+        "assetsPositive": 0,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G2-P3C2",
+        "swing_lookback": 19,
+        "wick_threshold_atr": 0.75,
+        "rr_ratio": 2.2,
+        "stop_atr_mult": 2.7,
+        "confirmation_bars": 2,
+        "trend_filter": true,
+        "rsi_filter": true,
+        "volume_filter": false,
+        "volume_mult": 1.1
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 10000,
+        "netPnl": 0,
+        "returnPct": 0,
+        "totalTrades": 0,
+        "totalWins": 0,
+        "winRate": 0,
+        "profitFactorW": 0,
+        "worstDrawdown": 0,
+        "avgDrawdown": 0,
+        "assetsPositive": 0,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G2-P3C3",
+        "swing_lookback": 19,
+        "wick_threshold_atr": 0.75,
+        "rr_ratio": 2.3000000000000003,
+        "stop_atr_mult": 3,
+        "confirmation_bars": 2,
+        "trend_filter": true,
+        "rsi_filter": false,
+        "volume_filter": true,
+        "volume_mult": 1.2000000000000002
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 10000.688318976914,
+        "netPnl": 0.6883189769141609,
+        "returnPct": 0.006883189769135711,
+        "totalTrades": 32,
+        "totalWins": 10,
+        "winRate": 0.3125,
+        "profitFactorW": 2.036414115316474,
+        "worstDrawdown": 0.04900995009999997,
+        "avgDrawdown": 0.017791494010000013,
+        "assetsPositive": 5,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G2-P4C1",
+        "swing_lookback": 17,
+        "wick_threshold_atr": 0.9,
+        "rr_ratio": 2.2,
+        "stop_atr_mult": 1.7000000000000002,
+        "confirmation_bars": 3,
+        "trend_filter": true,
+        "rsi_filter": false,
+        "volume_filter": false,
+        "volume_mult": 1.6
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9943.190812907822,
+        "netPnl": -56.809187092178036,
+        "returnPct": -0.568091870921783,
+        "totalTrades": 28,
+        "totalWins": 7,
+        "winRate": 0.25,
+        "profitFactorW": 0.7379194918587425,
+        "worstDrawdown": 0.04900995009999998,
+        "avgDrawdown": 0.016821195009999994,
+        "assetsPositive": 4,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G2-P4C2",
+        "swing_lookback": 20,
+        "wick_threshold_atr": 1.2000000000000002,
+        "rr_ratio": 2.1,
+        "stop_atr_mult": 2.1,
+        "confirmation_bars": 3,
+        "trend_filter": true,
+        "rsi_filter": true,
+        "volume_filter": true,
+        "volume_mult": 1.7000000000000002
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 10000,
+        "netPnl": 0,
+        "returnPct": 0,
+        "totalTrades": 0,
+        "totalWins": 0,
+        "winRate": 0,
+        "profitFactorW": 0,
+        "worstDrawdown": 0,
+        "avgDrawdown": 0,
+        "assetsPositive": 0,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G2-P4C3",
+        "swing_lookback": 19,
+        "wick_threshold_atr": 0.9,
+        "rr_ratio": 1.5,
+        "stop_atr_mult": 1.6,
+        "confirmation_bars": 3,
+        "trend_filter": true,
+        "rsi_filter": false,
+        "volume_filter": false,
+        "volume_mult": 1.7000000000000002
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9925.538941584125,
+        "netPnl": -74.4610584158745,
+        "returnPct": -0.7446105841587447,
+        "totalTrades": 25,
+        "totalWins": 7,
+        "winRate": 0.28,
+        "profitFactorW": 0.9173404606078236,
+        "worstDrawdown": 0.03940399000000002,
+        "avgDrawdown": 0.016850699000000004,
+        "assetsPositive": 3,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G2-P5C1",
+        "swing_lookback": 11,
+        "wick_threshold_atr": 0.9,
+        "rr_ratio": 1.4000000000000001,
+        "stop_atr_mult": 2.6,
+        "confirmation_bars": 1,
+        "trend_filter": false,
+        "rsi_filter": true,
+        "volume_filter": true,
+        "volume_mult": 1.5
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9849.938494773862,
+        "netPnl": -150.06150522613825,
+        "returnPct": -1.5006150522613781,
+        "totalTrades": 61,
+        "totalWins": 19,
+        "winRate": 0.3114754098360656,
+        "profitFactorW": 0.781368712483655,
+        "worstDrawdown": 0.06793465209301007,
+        "avgDrawdown": 0.03306536416944099,
+        "assetsPositive": 3,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G2-P5C2",
+        "swing_lookback": 11,
+        "wick_threshold_atr": 0.65,
+        "rr_ratio": 1.4000000000000001,
+        "stop_atr_mult": 2.2,
+        "confirmation_bars": 1,
+        "trend_filter": true,
+        "rsi_filter": false,
+        "volume_filter": true,
+        "volume_mult": 1.7000000000000002
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 10018.530152390147,
+        "netPnl": 18.530152390147123,
+        "returnPct": 0.18530152390148213,
+        "totalTrades": 56,
+        "totalWins": 24,
+        "winRate": 0.42857142857142855,
+        "profitFactorW": 1.2126640412280192,
+        "worstDrawdown": 0.0453391285073861,
+        "avgDrawdown": 0.020414411850738615,
+        "assetsPositive": 6,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G2-P5C3",
+        "swing_lookback": 8,
+        "wick_threshold_atr": 0.65,
+        "rr_ratio": 1.7000000000000002,
+        "stop_atr_mult": 2.7,
+        "confirmation_bars": 1,
+        "trend_filter": false,
+        "rsi_filter": true,
+        "volume_filter": true,
+        "volume_mult": 1.4000000000000001
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9611.278042670605,
+        "netPnl": -388.7219573293951,
+        "returnPct": -3.887219573293954,
+        "totalTrades": 87,
+        "totalWins": 18,
+        "winRate": 0.20689655172413793,
+        "profitFactorW": 0.5249849716275118,
+        "worstDrawdown": 0.10756111961004967,
+        "avgDrawdown": 0.05437356167099271,
+        "assetsPositive": 2,
+        "assetsTotal": 10
+      }
+    }
+  ],
+  "gen3": [
+    {
+      "cfg": {
+        "name": "G3-P1C1",
+        "swing_lookback": 20,
+        "wick_threshold_atr": 1,
+        "rr_ratio": 1.7000000000000002,
+        "stop_atr_mult": 2.8000000000000003,
+        "confirmation_bars": 1,
+        "trend_filter": false,
+        "rsi_filter": false,
+        "volume_filter": true,
+        "volume_mult": 1.8
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9834.391206987559,
+        "netPnl": -165.6087930124413,
+        "returnPct": -1.656087930124417,
+        "totalTrades": 63,
+        "totalWins": 17,
+        "winRate": 0.2698412698412698,
+        "profitFactorW": 0.8315373836946157,
+        "worstDrawdown": 0.08648275251635903,
+        "avgDrawdown": 0.038446172614762165,
+        "assetsPositive": 1,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G3-P1C2",
+        "swing_lookback": 21,
+        "wick_threshold_atr": 0.9500000000000001,
+        "rr_ratio": 1.9000000000000001,
+        "stop_atr_mult": 2.7,
+        "confirmation_bars": 1,
+        "trend_filter": true,
+        "rsi_filter": false,
+        "volume_filter": false,
+        "volume_mult": 1.6
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9990.63385693117,
+        "netPnl": -9.366143068829842,
+        "returnPct": -0.09366143068829658,
+        "totalTrades": 23,
+        "totalWins": 8,
+        "winRate": 0.34782608695652173,
+        "profitFactorW": 1.1351968077325567,
+        "worstDrawdown": 0.029701000000000023,
+        "avgDrawdown": 0.012920200000000024,
+        "assetsPositive": 6,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G3-P1C3",
+        "swing_lookback": 21,
+        "wick_threshold_atr": 0.9500000000000001,
+        "rr_ratio": 1.9000000000000001,
+        "stop_atr_mult": 2.7,
+        "confirmation_bars": 1,
+        "trend_filter": true,
+        "rsi_filter": true,
+        "volume_filter": true,
+        "volume_mult": 1.8
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 10000,
+        "netPnl": 0,
+        "returnPct": 0,
+        "totalTrades": 0,
+        "totalWins": 0,
+        "winRate": 0,
+        "profitFactorW": 0,
+        "worstDrawdown": 0,
+        "avgDrawdown": 0,
+        "assetsPositive": 0,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G3-P2C1",
+        "swing_lookback": 13,
+        "wick_threshold_atr": 0.5,
+        "rr_ratio": 1.2000000000000002,
+        "stop_atr_mult": 2.3000000000000003,
+        "confirmation_bars": 1,
+        "trend_filter": false,
+        "rsi_filter": false,
+        "volume_filter": true,
+        "volume_mult": 1.8
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 10077.960247877265,
+        "netPnl": 77.96024787726492,
+        "returnPct": 0.7796024787726452,
+        "totalTrades": 164,
+        "totalWins": 79,
+        "winRate": 0.4817073170731707,
+        "profitFactorW": 1.2213036837267446,
+        "worstDrawdown": 0.09790979136000215,
+        "avgDrawdown": 0.04818514165823877,
+        "assetsPositive": 5,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G3-P2C2",
+        "swing_lookback": 9,
+        "wick_threshold_atr": 0.6000000000000001,
+        "rr_ratio": 1.4000000000000001,
+        "stop_atr_mult": 2.1,
+        "confirmation_bars": 1,
+        "trend_filter": true,
+        "rsi_filter": true,
+        "volume_filter": true,
+        "volume_mult": 1.7000000000000002
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 10000,
+        "netPnl": 0,
+        "returnPct": 0,
+        "totalTrades": 0,
+        "totalWins": 0,
+        "winRate": 0,
+        "profitFactorW": 0,
+        "worstDrawdown": 0,
+        "avgDrawdown": 0,
+        "assetsPositive": 0,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G3-P2C3",
+        "swing_lookback": 11,
+        "wick_threshold_atr": 0.7000000000000001,
+        "rr_ratio": 1.7000000000000002,
+        "stop_atr_mult": 2.5,
+        "confirmation_bars": 1,
+        "trend_filter": true,
+        "rsi_filter": true,
+        "volume_filter": true,
+        "volume_mult": 1.5
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 10000,
+        "netPnl": 0,
+        "returnPct": 0,
+        "totalTrades": 0,
+        "totalWins": 0,
+        "winRate": 0,
+        "profitFactorW": 0,
+        "worstDrawdown": 0,
+        "avgDrawdown": 0,
+        "assetsPositive": 0,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G3-P3C1",
+        "swing_lookback": 19,
+        "wick_threshold_atr": 1.2000000000000002,
+        "rr_ratio": 2.7,
+        "stop_atr_mult": 2.5,
+        "confirmation_bars": 1,
+        "trend_filter": true,
+        "rsi_filter": true,
+        "volume_filter": false,
+        "volume_mult": 1.7000000000000002
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 10000,
+        "netPnl": 0,
+        "returnPct": 0,
+        "totalTrades": 0,
+        "totalWins": 0,
+        "winRate": 0,
+        "profitFactorW": 0,
+        "worstDrawdown": 0,
+        "avgDrawdown": 0,
+        "assetsPositive": 0,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G3-P3C2",
+        "swing_lookback": 21,
+        "wick_threshold_atr": 1.3,
+        "rr_ratio": 2.2,
+        "stop_atr_mult": 3,
+        "confirmation_bars": 1,
+        "trend_filter": true,
+        "rsi_filter": true,
+        "volume_filter": false,
+        "volume_mult": 1.8
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 10000,
+        "netPnl": 0,
+        "returnPct": 0,
+        "totalTrades": 0,
+        "totalWins": 0,
+        "winRate": 0,
+        "profitFactorW": 0,
+        "worstDrawdown": 0,
+        "avgDrawdown": 0,
+        "assetsPositive": 0,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G3-P3C3",
+        "swing_lookback": 18,
+        "wick_threshold_atr": 1.25,
+        "rr_ratio": 2.3000000000000003,
+        "stop_atr_mult": 3,
+        "confirmation_bars": 1,
+        "trend_filter": true,
+        "rsi_filter": true,
+        "volume_filter": false,
+        "volume_mult": 1.8
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 10000,
+        "netPnl": 0,
+        "returnPct": 0,
+        "totalTrades": 0,
+        "totalWins": 0,
+        "winRate": 0,
+        "profitFactorW": 0,
+        "worstDrawdown": 0,
+        "avgDrawdown": 0,
+        "assetsPositive": 0,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G3-P4C1",
+        "swing_lookback": 24,
+        "wick_threshold_atr": 1.5,
+        "rr_ratio": 2.1,
+        "stop_atr_mult": 2.4000000000000004,
+        "confirmation_bars": 0,
+        "trend_filter": true,
+        "rsi_filter": true,
+        "volume_filter": false,
+        "volume_mult": 1.5
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 10000,
+        "netPnl": 0,
+        "returnPct": 0,
+        "totalTrades": 0,
+        "totalWins": 0,
+        "winRate": 0,
+        "profitFactorW": 0,
+        "worstDrawdown": 0,
+        "avgDrawdown": 0,
+        "assetsPositive": 0,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G3-P4C2",
+        "swing_lookback": 22,
+        "wick_threshold_atr": 1.5,
+        "rr_ratio": 1.6,
+        "stop_atr_mult": 1.8,
+        "confirmation_bars": 0,
+        "trend_filter": true,
+        "rsi_filter": false,
+        "volume_filter": true,
+        "volume_mult": 1.6
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 10023.52,
+        "netPnl": 23.520000000000437,
+        "returnPct": 0.23520000000001318,
+        "totalTrades": 8,
+        "totalWins": 4,
+        "winRate": 0.5,
+        "profitFactorW": 1.5561023622047252,
+        "worstDrawdown": 0.01,
+        "avgDrawdown": 0.0039999999999999905,
+        "assetsPositive": 4,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G3-P4C3",
+        "swing_lookback": 19,
+        "wick_threshold_atr": 1.5,
+        "rr_ratio": 2,
+        "stop_atr_mult": 2.2,
+        "confirmation_bars": 0,
+        "trend_filter": true,
+        "rsi_filter": true,
+        "volume_filter": false,
+        "volume_mult": 1.7000000000000002
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 10000,
+        "netPnl": 0,
+        "returnPct": 0,
+        "totalTrades": 0,
+        "totalWins": 0,
+        "winRate": 0,
+        "profitFactorW": 0,
+        "worstDrawdown": 0,
+        "avgDrawdown": 0,
+        "assetsPositive": 0,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G3-P5C1",
+        "swing_lookback": 16,
+        "wick_threshold_atr": 0.75,
+        "rr_ratio": 1.9000000000000001,
+        "stop_atr_mult": 3,
+        "confirmation_bars": 2,
+        "trend_filter": false,
+        "rsi_filter": false,
+        "volume_filter": false,
+        "volume_mult": 1.2000000000000002
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9675.657148832717,
+        "netPnl": -324.3428511672828,
+        "returnPct": -3.24342851167283,
+        "totalTrades": 113,
+        "totalWins": 28,
+        "winRate": 0.24778761061946902,
+        "profitFactorW": 0.8199555894950236,
+        "worstDrawdown": 0.1323645312543216,
+        "avgDrawdown": 0.06594223450770711,
+        "assetsPositive": 3,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G3-P5C2",
+        "swing_lookback": 17,
+        "wick_threshold_atr": 0.6000000000000001,
+        "rr_ratio": 1.5,
+        "stop_atr_mult": 2.8000000000000003,
+        "confirmation_bars": 2,
+        "trend_filter": false,
+        "rsi_filter": false,
+        "volume_filter": false,
+        "volume_mult": 1.2000000000000002
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9609.219162497984,
+        "netPnl": -390.78083750201586,
+        "returnPct": -3.907808375020161,
+        "totalTrades": 163,
+        "totalWins": 50,
+        "winRate": 0.3067484662576687,
+        "profitFactorW": 0.7069094033473688,
+        "worstDrawdown": 0.19448150210168966,
+        "avgDrawdown": 0.07977335443856859,
+        "assetsPositive": 2,
+        "assetsTotal": 10
+      }
+    },
+    {
+      "cfg": {
+        "name": "G3-P5C3",
+        "swing_lookback": 19,
+        "wick_threshold_atr": 0.65,
+        "rr_ratio": 1.8,
+        "stop_atr_mult": 3,
+        "confirmation_bars": 2,
+        "trend_filter": true,
+        "rsi_filter": false,
+        "volume_filter": true,
+        "volume_mult": 1.2000000000000002
+      },
+      "agg": {
+        "totalStart": 10000,
+        "totalFinal": 9988.940962510842,
+        "netPnl": -11.059037489158072,
+        "returnPct": -0.11059037489158374,
+        "totalTrades": 39,
+        "totalWins": 14,
+        "winRate": 0.358974358974359,
+        "profitFactorW": 1.656209096168651,
+        "worstDrawdown": 0.04900995009999997,
+        "avgDrawdown": 0.018821195009999986,
+        "assetsPositive": 5,
+        "assetsTotal": 10
+      }
+    }
+  ],
+  "champion": {
+    "cfg": {
+      "name": "G3-P2C1",
+      "swing_lookback": 13,
+      "wick_threshold_atr": 0.5,
+      "rr_ratio": 1.2000000000000002,
+      "stop_atr_mult": 2.3000000000000003,
+      "confirmation_bars": 1,
+      "trend_filter": false,
+      "rsi_filter": false,
+      "volume_filter": true,
+      "volume_mult": 1.8
+    },
+    "agg": {
+      "totalStart": 10000,
+      "totalFinal": 10077.960247877265,
+      "netPnl": 77.96024787726492,
+      "returnPct": 0.7796024787726452,
+      "totalTrades": 164,
+      "totalWins": 79,
+      "winRate": 0.4817073170731707,
+      "profitFactorW": 1.2213036837267446,
+      "worstDrawdown": 0.09790979136000215,
+      "avgDrawdown": 0.04818514165823877,
+      "assetsPositive": 5,
+      "assetsTotal": 10
+    },
+    "perAsset": [
+      {
+        "symbol": "BTCUSD",
+        "result": {
+          "startCapital": 1000,
+          "finalEquity": 1076.5478576770104,
+          "netPnl": 76.54785767701037,
+          "returnPct": 7.6547857677010445,
+          "trades": 20,
+          "wins": 13,
+          "losses": 7,
+          "winRate": 0.65,
+          "profitFactor": 2.0153976045286877,
+          "maxDrawdown": 0.02970099999999994,
+          "avgR": 0.3748473189425464,
+          "expectancyPerTrade": 3.8273928838505187,
+          "equityCurveLen": 1501
+        }
+      },
+      {
+        "symbol": "ETHUSD",
+        "result": {
+          "startCapital": 1000,
+          "finalEquity": 970.236959658532,
+          "netPnl": -29.763040341468013,
+          "returnPct": -2.976304034146804,
+          "trades": 20,
+          "wins": 8,
+          "losses": 12,
+          "winRate": 0.4,
+          "profitFactor": 0.7501212202837995,
+          "maxDrawdown": 0.06266791446224929,
+          "avgR": -0.14543565246019038,
+          "expectancyPerTrade": -1.4881520170734006,
+          "equityCurveLen": 1501
+        }
+      },
+      {
+        "symbol": "SOLUSD",
+        "result": {
+          "startCapital": 1000,
+          "finalEquity": 992.8776117610848,
+          "netPnl": -7.122388238915164,
+          "returnPct": -0.71223882389152,
+          "trades": 10,
+          "wins": 4,
+          "losses": 6,
+          "winRate": 0.4,
+          "profitFactor": 0.8682656093685762,
+          "maxDrawdown": 0.03940399000000014,
+          "avgR": -0.06599865785016645,
+          "expectancyPerTrade": -0.7122388238915164,
+          "equityCurveLen": 1501
+        }
+      },
+      {
+        "symbol": "ES1!",
+        "result": {
+          "startCapital": 1000,
+          "finalEquity": 1069.4620813712475,
+          "netPnl": 69.46208137124745,
+          "returnPct": 6.946208137124743,
+          "trades": 13,
+          "wins": 9,
+          "losses": 4,
+          "winRate": 0.6923076923076923,
+          "profitFactor": 2.6359126114516913,
+          "maxDrawdown": 0.01990000000000008,
+          "avgR": 0.5230769230769232,
+          "expectancyPerTrade": 5.343237028557496,
+          "equityCurveLen": 1501
+        }
+      },
+      {
+        "symbol": "NQ1!",
+        "result": {
+          "startCapital": 1000,
+          "finalEquity": 1044.249716222765,
+          "netPnl": 44.24971622276507,
+          "returnPct": 4.424971622276508,
+          "trades": 11,
+          "wins": 7,
+          "losses": 4,
+          "winRate": 0.6363636363636364,
+          "profitFactor": 2.054803850543912,
+          "maxDrawdown": 0.019900000000000185,
+          "avgR": 0.4000000000000002,
+          "expectancyPerTrade": 4.022701474796825,
+          "equityCurveLen": 1501
+        }
+      },
+      {
+        "symbol": "GC1!",
+        "result": {
+          "startCapital": 1000,
+          "finalEquity": 1003.7635344,
+          "netPnl": 3.763534400000026,
+          "returnPct": 0.37635343999999904,
+          "trades": 4,
+          "wins": 2,
+          "losses": 2,
+          "winRate": 0.5,
+          "profitFactor": 1.1891223316582915,
+          "maxDrawdown": 0.019899999999999977,
+          "avgR": 0.09999999999999987,
+          "expectancyPerTrade": 0.9408836000000065,
+          "equityCurveLen": 1501
+        }
+      },
+      {
+        "symbol": "CL1!",
+        "result": {
+          "startCapital": 1000,
+          "finalEquity": 975.1387959260468,
+          "netPnl": -24.861204073953218,
+          "returnPct": -2.4861204073953203,
+          "trades": 20,
+          "wins": 8,
+          "losses": 12,
+          "winRate": 0.4,
+          "profitFactor": 0.791471036454432,
+          "maxDrawdown": 0.05141992943579617,
+          "avgR": -0.11999999999999991,
+          "expectancyPerTrade": -1.2430602036976608,
+          "equityCurveLen": 1501
+        }
+      },
+      {
+        "symbol": "AAPL",
+        "result": {
+          "startCapital": 1000,
+          "finalEquity": 940.8597670858959,
+          "netPnl": -59.140232914104104,
+          "returnPct": -5.914023291410409,
+          "trades": 17,
+          "wins": 5,
+          "losses": 12,
+          "winRate": 0.29411764705882354,
+          "profitFactor": 0.5021748915761958,
+          "maxDrawdown": 0.09561792499119562,
+          "avgR": -0.3529411764705881,
+          "expectancyPerTrade": -3.478837230241418,
+          "equityCurveLen": 1501
+        }
+      },
+      {
+        "symbol": "TSLA",
+        "result": {
+          "startCapital": 1000,
+          "finalEquity": 1022.3313789898192,
+          "netPnl": 22.3313789898192,
+          "returnPct": 2.2331378989819184,
+          "trades": 21,
+          "wins": 11,
+          "losses": 10,
+          "winRate": 0.5238095238095238,
+          "profitFactor": 1.2151687411786456,
+          "maxDrawdown": 0.04543086633314408,
+          "avgR": 0.11099427008166166,
+          "expectancyPerTrade": 1.0633989995152,
+          "equityCurveLen": 1501
+        }
+      },
+      {
+        "symbol": "NVDA",
+        "result": {
+          "startCapital": 1000,
+          "finalEquity": 982.4925447848641,
+          "netPnl": -17.507455215135906,
+          "returnPct": -1.7507455215135859,
+          "trades": 28,
+          "wins": 12,
+          "losses": 16,
+          "winRate": 0.42857142857142855,
+          "profitFactor": 0.8853442306831031,
+          "maxDrawdown": 0.09790979136000215,
+          "avgR": -0.05714285714285706,
+          "expectancyPerTrade": -0.6252662576834253,
+          "equityCurveLen": 1501
+        }
+      }
+    ]
+  }
+}
