@@ -1,6 +1,6 @@
 # Evolution Leaderboard
 
-**Strategy:** sfp · **Seed:** 20260424 · **Universe:** 10 assets × 1500 bars · **Capital:** $1000 / asset · **Risk:** 1% per trade
+**Strategy:** sfp · **Data:** synthetic (seeded GBM) · **Seed:** 20260424 · **Universe:** 10 assets × 1500 bars · **Capital:** $1000 / asset · **Risk:** 1% per trade
 
 **Fitness** = netPnL ÷ max(worst-DD, 5%), with a soft penalty when totalTrades < 30.
 

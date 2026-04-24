@@ -24,20 +24,71 @@ Pine Script authoring (use `pine-develop`), or chart inspection.
 ## Entry point
 
 ```bash
-node evolve/evolve.js                             # default: SFP
-node evolve/evolve.js --strategy=sfp              # same, explicit
-node evolve/evolve.js --strategy=template         # bundled Donchian example
-node evolve/evolve.js --strategy=path/to/my.js    # user-supplied module
-node evolve/evolve.js --seed=42 --bars=3000       # custom seed / history length
+node evolve/evolve.js                              # default: SFP + synthetic
+node evolve/evolve.js --strategy=sfp               # same, explicit
+node evolve/evolve.js --strategy=template          # bundled Donchian example
+node evolve/evolve.js --strategy=path/to/my.js     # user-supplied module
+node evolve/evolve.js --seed=42 --bars=3000        # synthetic only
+
+# Live mode — pulls real OHLCV from the running TradingView Desktop via CDP.
+node evolve/evolve.js --data=live                  # defaults: 10 symbols, tf=D, 500 bars
+node evolve/evolve.js --data=live --tf=60 --bars=500 \
+                      --symbols=BTCUSD,ETHUSD,AAPL
+node evolve/evolve.js --data=live --no-cache       # force a fresh pull
 ```
 
 Writes:
 - `leaderboard.md` (repo root) — all 51 configs ranked across baseline + G1/G2/G3
 - `evolve/results/run.json` — raw results for post-hoc analysis
+- `evolve/cache/<key>.json` — bar cache (live mode only, git-ignored)
 - Console progress: `G1 1/20 ... G3 15/15`
 
-Runtime: ~0.3s for the default universe (10 assets × 1500 bars). Safe to
-run inline without backgrounding.
+Runtime: ~0.3s synthetic. Live mode adds ~1–3s per symbol on cold run,
+instant on cache hit.
+
+## Data sources
+
+### `--data=synthetic` (default)
+
+Deterministic seeded GBM with regime switching and jumps, 10 assets,
+1500 bars, no calendar dates. Defined in `evolve/data.js`. Reproducible
+across machines.
+
+### `--data=live`
+
+Real bars from TradingView Desktop via CDP on `localhost:9222`. Uses
+`src/core/chart.js :: setSymbol/setTimeframe` + `src/core/data.js :: getOhlcv`
+under the hood (via dynamic import — bridges from the CJS evolve module
+into the ESM core).
+
+**Prerequisites**:
+1. TradingView Desktop is running with `--remote-debugging-port=9222`
+   (launch via `scripts/launch_tv_debug_*.sh`).
+2. A chart tab is open. Any symbol/timeframe — the loader will navigate.
+3. `npm install` has been run (for the `chrome-remote-interface` dep).
+
+**Flags**:
+- `--symbols=A,B,C` — comma-separated symbols. Default: 10-asset crypto/
+  futures/stocks mix. Bare symbols work (TradingView auto-resolves);
+  explicit exchange prefixes (`NYMEX:CL1!`) also work.
+- `--tf=<resolution>` — timeframe. Default `D`. Values: `1`, `5`, `15`,
+  `60`, `240`, `D`, `W`.
+- `--bars=<n>` — bars per symbol. Default 500. **Hard-capped at 500 by
+  `src/core/data.js :: MAX_OHLCV_BARS`**. For longer history, use a
+  smaller timeframe (`60` → 500 hourly bars ≈ 3 weeks of market hours).
+- `--no-cache` — ignore the disk cache and re-pull.
+
+**Cache**: keyed by `(timeframe, count, sorted-symbols)` at
+`evolve/cache/<key>.json`. Safe to delete; git-ignored.
+
+**Error modes** and what to do:
+- `Missing dependency 'chrome-remote-interface'` → run `npm install` at
+  repo root.
+- `Cannot reach TradingView on localhost:9222` → start TV with the
+  debug-port launcher, or check that port 9222 is free.
+- `warning: <SYM> returned N/500 bars` → TV hadn't loaded enough
+  history. Scroll left on that chart once in the UI, then re-run
+  with `--no-cache`.
 
 ### Providing a different starting strategy
 

@@ -2,10 +2,14 @@
 // mutate top-5 into children, repeat for 3 generations.
 //
 // CLI:
-//   node evolve/evolve.js                        # default: sfp
-//   node evolve/evolve.js --strategy=sfp         # built-in by name
+//   node evolve/evolve.js                            # default: sfp + synthetic
+//   node evolve/evolve.js --strategy=sfp             # built-in by name
 //   node evolve/evolve.js --strategy=path/to/my.js   # custom module
-//   node evolve/evolve.js --seed=42 --bars=2000
+//   node evolve/evolve.js --seed=42 --bars=2000      # synthetic only
+//   node evolve/evolve.js --data=live                # pull real bars via CDP
+//   node evolve/evolve.js --data=live --tf=60 --bars=500 \
+//                         --symbols=BTCUSD,ETHUSD,AAPL
+//   node evolve/evolve.js --data=live --no-cache     # force a fresh pull
 //
 'use strict';
 
@@ -176,10 +180,27 @@ function topN(runs, n) {
 }
 
 // ---------- Main ----------
-function evolve(options = {}) {
+async function loadUniverse(options) {
+  const nBars = options.nBars || (options.dataSource === 'live' ? 500 : 1500);
+
+  if (options.dataSource === 'live') {
+    const { loadLiveUniverse } = require('./data-live');
+    const universe = await loadLiveUniverse({
+      symbols:   options.symbols,
+      timeframe: options.timeframe,
+      count:     nBars,
+      noCache:   options.noCache,
+    });
+    return { universe, nBars, label: `live (tf=${options.timeframe || 'D'})` };
+  }
+
+  // default: synthetic
+  return { universe: buildUniverse(nBars), nBars, label: 'synthetic (seeded GBM)' };
+}
+
+async function evolve(options = {}) {
   const strategy = options.strategy || resolveStrategy('sfp');
   const seed   = options.seed   || 20260424;
-  const nBars  = options.nBars  || 1500;
   const outDir = options.outDir || path.join(__dirname, '..');
 
   // Strategy must provide random/mutate OR we use generic defaults.
@@ -191,8 +212,9 @@ function evolve(options = {}) {
     : (h, p, name) => genericMutate(strategy, h, p, name);
 
   const h = makeHelpers(seed);
-  const universe = buildUniverse(nBars);
+  const { universe, nBars, label: dataLabel } = await loadUniverse(options);
   console.log(`[evolve] Strategy: ${strategy.name}`);
+  console.log(`[evolve] Data: ${dataLabel}`);
   console.log(`[evolve] Built universe: ${universe.length} assets × ${nBars} bars`);
 
   console.log('[evolve] Running baseline...');
@@ -238,7 +260,7 @@ function evolve(options = {}) {
   const lbLines = [];
   lbLines.push(`# Evolution Leaderboard`);
   lbLines.push('');
-  lbLines.push(`**Strategy:** ${strategy.name} · **Seed:** ${seed} · **Universe:** ${universe.length} assets × ${nBars} bars · **Capital:** $1000 / asset · **Risk:** 1% per trade`);
+  lbLines.push(`**Strategy:** ${strategy.name} · **Data:** ${dataLabel} · **Seed:** ${seed} · **Universe:** ${universe.length} assets × ${nBars} bars · **Capital:** $1000 / asset · **Risk:** 1% per trade`);
   lbLines.push('');
   lbLines.push(`**Fitness** = netPnL ÷ max(worst-DD, 5%), with a soft penalty when totalTrades < 30.`);
   lbLines.push('');
@@ -278,6 +300,8 @@ function evolve(options = {}) {
 
   const jsonDump = {
     strategy: strategy.name,
+    dataSource: options.dataSource || 'synthetic',
+    timeframe:  options.timeframe || null,
     seed, nBars,
     baseline: { cfg: baselineRun.cfg, agg: baselineRun.agg, perAsset: baselineRun.perAsset },
     gen1: gen1Runs.map(r => ({ cfg: r.cfg, agg: r.agg })),
@@ -297,11 +321,23 @@ function evolve(options = {}) {
 if (require.main === module) {
   const args = parseArgs(process.argv);
   const strategy = resolveStrategy(args.strategy);
+  const symbols = args.symbols
+    ? String(args.symbols).split(',').map(s => s.trim()).filter(Boolean)
+    : undefined;
+
   evolve({
     strategy,
-    seed:  args.seed  ? Number(args.seed)  : undefined,
-    nBars: args.bars  ? Number(args.bars)  : undefined,
-    outDir: args.out,
+    seed:       args.seed ? Number(args.seed) : undefined,
+    nBars:      args.bars ? Number(args.bars) : undefined,
+    outDir:     args.out,
+    dataSource: args.data || 'synthetic',
+    timeframe:  args.tf,
+    symbols,
+    noCache:    !!args['no-cache'],
+  }).catch(err => {
+    console.error(`\n[evolve] ERROR: ${err.message}`);
+    if (process.env.DEBUG) console.error(err.stack);
+    process.exit(1);
   });
 }
 
