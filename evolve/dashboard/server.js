@@ -144,9 +144,10 @@ function handleLaunchTv(res) {
     linux:  path.join(REPO_ROOT, 'scripts', 'launch_tv_debug_linux.sh'),
     win32:  path.join(REPO_ROOT, 'scripts', 'launch_tv_debug.bat'),
   };
-  const script = scriptByPlatform[process.platform];
+  // TV_LAUNCH_SCRIPT env var lets the user point to a custom script
+  const script = process.env.TV_LAUNCH_SCRIPT || scriptByPlatform[process.platform];
   if (!script || !fs.existsSync(script)) {
-    return json(res, 400, { error: `No launch script for ${process.platform}` });
+    return json(res, 400, { error: `No launch script for ${process.platform}. Set TV_LAUNCH_SCRIPT env var to your script path.` });
   }
 
   const runId = 'tv-' + crypto.randomUUID();
